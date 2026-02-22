@@ -2512,11 +2512,6 @@ def main():
         print("✅ Бот запущен успешно!")
         application.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
 
-    except Conflict as e:
-        print("❌ ОШИБКА: Обнаружено несколько запущенных ботов! Завершите все процессы Python.")
-    except Exception as e:
-        logger.error(f"Критическая ошибка при запуске бота: {e}")
-        print(f"❌ Критическая ошибка: {e}")
 
 if __name__ == "__main__":
     main()
@@ -2553,4 +2548,5 @@ if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
 
     run_bot()
+
 
