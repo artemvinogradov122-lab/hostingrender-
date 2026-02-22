@@ -1,3 +1,7 @@
+# ====================================================
+# ВАШ ИСХОДНЫЙ КОД (БОТ) – начинается здесь
+# ====================================================
+
 import logging
 import random
 import string
@@ -2233,7 +2237,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             seller_notified = await notify_seller_about_manager_rejection(deal_id, context)
             if seller_notified:
                 await query.message.reply_text(
-                    get_text(user_id, 'manager_confirmed', context, deal_id=deal_id, net=net_amount),
+                    get_text(user_id, 'manager_rejected', context),
                     reply_markup=get_back_keyboard(user_id, context)
                 )
                 logger.info(f"❌ Менеджер {user_id} отклонил заявку на передачу NFT для сделки {deal_id}")
@@ -2511,21 +2515,25 @@ def main():
 
         print("✅ Бот запущен успешно!")
         application.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
-except Exception as e:
-    print("❌ Ошибка в боте:", file=sys.stderr)
-    traceback.print_exc(file=sys.stderr)
-    while True:
-        time.sleep(60)
 
+    except Conflict as e:
+        print("❌ ОШИБКА: Обнаружено несколько запущенных ботов! Завершите все процессы Python.")
+        # Удаляем input, так как в Render он вызовет ошибку
+        # input("Нажмите Enter для выхода...")
+    except Exception as e:
+        logger.error(f"Критическая ошибка при запуске бота: {e}")
+        print(f"❌ Критическая ошибка: {e}")
+        # input("Нажмите Enter для выхода...")
 
-if __name__ == "__main__":
-    main()
-# ===== КОД ДЛЯ ХОСТА =====
+# =========================================================================
+# ДОБАВЛЕННЫЙ КОД ДЛЯ РАБОТЫ НА RENDER
+# =========================================================================
 from flask import Flask
 import threading
 import os
 import sys
 import traceback
+import time
 
 app = Flask(__name__)
 
@@ -2536,23 +2544,20 @@ def health():
 
 def run_flask():
     port = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 def run_bot():
     try:
-        #main()  # запуск вашего бота
+        main()
     except Exception as e:
-        # Печатаем ошибку в stderr, чтобы она попала в логи Render
         print("❌ Ошибка в боте:", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
-        # Не завершаем процесс, чтобы Render не перезапускал бесконечно
+        # Бесконечный цикл, чтобы Render не перезапускал процесс
         while True:
             time.sleep(60)
 
 if __name__ == "__main__":
-    threading.Thread(target=run_flask).start()
-
+    # Запускаем Flask в отдельном потоке
+    threading.Thread(target=run_flask, daemon=True).start()
+    # Запускаем бота
     run_bot()
-
-
-
