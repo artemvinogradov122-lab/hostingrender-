@@ -2511,6 +2511,11 @@ def main():
 
         print("✅ Бот запущен успешно!")
         application.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
+except Exception as e:
+    print("❌ Ошибка в боте:", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+    while True:
+        time.sleep(60)
 
 
 if __name__ == "__main__":
@@ -2548,5 +2553,6 @@ if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
 
     run_bot()
+
 
 
