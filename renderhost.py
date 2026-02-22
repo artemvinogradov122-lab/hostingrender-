@@ -2526,7 +2526,7 @@ def main():
         # input("Нажмите Enter для выхода...")
 
 # =========================================================================
-# ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ HEALTH CHECK (вместо Flask)
+# ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ HEALTH CHECK (с reuse address)
 # =========================================================================
 import http.server
 import socketserver
@@ -2551,11 +2551,24 @@ class HealthCheckHandler(http.server.SimpleHTTPRequestHandler):
         # Подавляем логи запросов, чтобы не засорять вывод
         pass
 
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
 def run_http_server():
     port = int(os.environ.get('PORT', 8000))
     handler = HealthCheckHandler
-    with socketserver.TCPServer(("", port), handler) as httpd:
-        httpd.serve_forever()
+    # Небольшая задержка, чтобы порт точно освободился
+    time.sleep(1)
+    try:
+        with ReusableTCPServer(("", port), handler) as httpd:
+            httpd.serve_forever()
+    except OSError as e:
+        print(f"❌ Не удалось запустить HTTP-сервер на порту {port}: {e}", file=sys.stderr)
+        # Если порт занят, пробуем следующий порт (на всякий случай)
+        alt_port = port + 1
+        print(f"Пробуем порт {alt_port}...", file=sys.stderr)
+        with ReusableTCPServer(("", alt_port), handler) as httpd:
+            httpd.serve_forever()
 
 def run_bot():
     try:
