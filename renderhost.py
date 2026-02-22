@@ -2526,25 +2526,36 @@ def main():
         # input("Нажмите Enter для выхода...")
 
 # =========================================================================
-# ДОБАВЛЕННЫЙ КОД ДЛЯ РАБОТЫ НА RENDER
+# ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ HEALTH CHECK (вместо Flask)
 # =========================================================================
-from flask import Flask
+import http.server
+import socketserver
 import threading
 import os
 import sys
 import traceback
 import time
 
-app = Flask(__name__)
+class HealthCheckHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/' or self.path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(b'Bot is running')
+        else:
+            self.send_response(404)
+            self.end_headers()
 
-@app.route('/')
-@app.route('/health')
-def health():
-    return "Bot is running", 200
+    def log_message(self, format, *args):
+        # Подавляем логи запросов, чтобы не засорять вывод
+        pass
 
-def run_flask():
+def run_http_server():
     port = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
+    handler = HealthCheckHandler
+    with socketserver.TCPServer(("", port), handler) as httpd:
+        httpd.serve_forever()
 
 def run_bot():
     try:
@@ -2557,7 +2568,7 @@ def run_bot():
             time.sleep(60)
 
 if __name__ == "__main__":
-    # Запускаем Flask в отдельном потоке
-    threading.Thread(target=run_flask, daemon=True).start()
+    # Запускаем HTTP-сервер в отдельном потоке
+    threading.Thread(target=run_http_server, daemon=True).start()
     # Запускаем бота
     run_bot()
