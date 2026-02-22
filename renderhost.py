@@ -2514,12 +2514,9 @@ def main():
 
     except Conflict as e:
         print("❌ ОШИБКА: Обнаружено несколько запущенных ботов! Завершите все процессы Python.")
-        input("Нажмите Enter для выхода...")
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске бота: {e}")
         print(f"❌ Критическая ошибка: {e}")
-        input("Нажмите Enter для выхода...")
-
 
 if __name__ == "__main__":
     main()
@@ -2554,4 +2551,5 @@ def run_bot():
 
 if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
+
     run_bot()
