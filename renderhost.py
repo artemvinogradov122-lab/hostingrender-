@@ -2540,7 +2540,7 @@ def run_flask():
 
 def run_bot():
     try:
-        main()  # запуск вашего бота
+        #main()  # запуск вашего бота
     except Exception as e:
         # Печатаем ошибку в stderr, чтобы она попала в логи Render
         print("❌ Ошибка в боте:", file=sys.stderr)
@@ -2553,3 +2553,4 @@ if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
 
     run_bot()
+
