@@ -1,6 +1,3 @@
-# ====================================================
-# ПОЛНЫЙ КОД БОТА (ВАШ ИСХОДНЫЙ КОД + ДОПОЛНЕНИЯ)
-# ====================================================
 
 import logging
 import random
@@ -1355,6 +1352,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await query.message.reply_text(get_text(user_id, 'support_message', context), reply_markup=get_support_keyboard(user_id, context))
             return
 
+        # Обработка подтверждения оплаты
         if data.startswith("confirm_payment_"):
             deal_id = data.replace("confirm_payment_", "")
             if deal_id not in deal_links:
@@ -1386,30 +1384,39 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await send_main_menu_with_photo(query.message.chat_id, context)
             return
 
+        # Обработка заявки на передачу NFT (ИСПРАВЛЕННЫЙ БЛОК)
         if data.startswith("request_transfer_"):
-            deal_id = data.replace("request_transfer_", "")
-            if deal_id not in deal_links or deal_id not in seller_transfers:
-                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
-                return
-            deal_data = deal_links[deal_id]
-            if user_id != deal_data['user_id']:
-                await query.message.reply_text(get_text(user_id, 'not_seller', context))
-                return
-            if seller_transfers[deal_id]['transfer_requested']:
-                await query.message.reply_text("❌ Заявка на передачу уже подана. Ожидайте подтверждения менеджера.")
-                return
-            seller_transfers[deal_id]['transfer_requested'] = True
-            seller_transfers[deal_id]['seller_confirmed'] = True
-            seller_username = query.from_user.username or deal_data.get('username', 'Продавец')
-            managers_notified = await notify_managers_about_transfer_request(deal_id, seller_username, context)
-            net_amount = seller_transfers[deal_id]['net_amount']
-            if managers_notified:
-                await query.message.reply_text(get_text(user_id, 'transfer_request_submitted', context, deal_id=deal_id, description=deal_data['description'], net=net_amount), reply_markup=get_back_keyboard(user_id, context))
-                logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}")
-            else:
-                await query.message.reply_text(get_text(user_id, 'transfer_request_error', context), reply_markup=get_main_keyboard(user_id, context))
+            try:
+                deal_id = data.replace("request_transfer_", "")
+                if deal_id not in deal_links:
+                    await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                    return
+                if deal_id not in seller_transfers:
+                    await query.message.reply_text("❌ Сначала покупатель должен подтвердить оплату.", reply_markup=get_back_keyboard(user_id, context))
+                    return
+                deal_data = deal_links[deal_id]
+                if user_id != deal_data['user_id']:
+                    await query.message.reply_text(get_text(user_id, 'not_seller', context))
+                    return
+                if seller_transfers[deal_id]['transfer_requested']:
+                    await query.message.reply_text("❌ Заявка на передачу уже подана. Ожидайте подтверждения менеджера.")
+                    return
+                seller_transfers[deal_id]['transfer_requested'] = True
+                seller_transfers[deal_id]['seller_confirmed'] = True
+                seller_username = query.from_user.username or deal_data.get('username', 'Продавец')
+                managers_notified = await notify_managers_about_transfer_request(deal_id, seller_username, context)
+                net_amount = seller_transfers[deal_id]['net_amount']
+                if managers_notified:
+                    await query.message.reply_text(get_text(user_id, 'transfer_request_submitted', context, deal_id=deal_id, description=deal_data['description'], net=net_amount), reply_markup=get_back_keyboard(user_id, context))
+                    logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}")
+                else:
+                    await query.message.reply_text(get_text(user_id, 'transfer_request_error', context), reply_markup=get_main_keyboard(user_id, context))
+            except Exception as e:
+                logger.error(f"❌ Ошибка в request_transfer: {e}", exc_info=True)
+                await query.message.reply_text("❌ Внутренняя ошибка. Проверьте логи.")
             return
 
+        # Обработка подтверждения менеджером
         if data.startswith("manager_confirm_"):
             deal_id = data.replace("manager_confirm_", "")
             if not is_manager(user_id):
@@ -1434,6 +1441,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
             return
 
+        # Обработка отклонения менеджером
         if data.startswith("manager_reject_"):
             deal_id = data.replace("manager_reject_", "")
             if not is_manager(user_id):
@@ -1452,6 +1460,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
             return
 
+        # Обработка подтверждения получения покупателем
         if data.startswith("confirm_receipt_"):
             deal_id = data.replace("confirm_receipt_", "")
             if deal_id not in deal_links or deal_id not in seller_transfers:
@@ -1461,16 +1470,17 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 await query.message.reply_text(get_text(user_id, 'not_buyer', context))
                 return
             if not seller_transfers[deal_id]['manager_confirmed']:
-                await query.message.reply_text("❌ Менеджер еще не подтвердил получение NFT.", context)
+                await query.message.reply_text("❌ Менеджер еще не подтвердил получение NFT.", reply_markup=get_back_keyboard(user_id, context))
                 return
             if seller_transfers[deal_id].get('buyer_receipt_confirmed', False):
                 await query.message.reply_text("✅ Вы уже подтвердили получение товара.")
                 return
             seller_transfers[deal_id]['buyer_receipt_confirmed'] = True
             await finalize_deal_after_buyer_confirmation(deal_id, context)
-            await query.message.reply_text(get_text(user_id, 'buyer_receipt_confirmed', context, deal_id=deal_id, description=deal_links[deal_id]['description']))
+            await query.message.reply_text(get_text(user_id, 'buyer_receipt_confirmed', context, deal_id=deal_id, description=deal_links[deal_id]['description']), reply_markup=get_back_keyboard(user_id, context))
             return
 
+        # Обработка отмены сделки продавцом
         if data.startswith("cancel_deal_"):
             deal_id = data.replace("cancel_deal_", "")
             if deal_id not in deal_links:
@@ -1495,7 +1505,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             return
 
     except Exception as e:
-        logger.error(f"Ошибка в handle_callback_query: {e}")
+        logger.error(f"Ошибка в handle_callback_query: {e}", exc_info=True)
         try:
             await update.callback_query.message.reply_text("Произошла ошибка. Пожалуйста, попробуйте еще раз.")
         except:
