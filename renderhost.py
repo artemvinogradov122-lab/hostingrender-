@@ -1,3 +1,6 @@
+# ====================================================
+# ПОЛНЫЙ КОД БОТА (С УСИЛЕННЫМ ЛОГИРОВАНИЕМ)
+# ====================================================
 
 import logging
 import random
@@ -1384,7 +1387,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await send_main_menu_with_photo(query.message.chat_id, context)
             return
 
-        # Обработка заявки на передачу NFT (ИСПРАВЛЕННЫЙ БЛОК)
+        # Обработка заявки на передачу NFT (с улучшенной обработкой ошибок)
         if data.startswith("request_transfer_"):
             try:
                 deal_id = data.replace("request_transfer_", "")
@@ -1412,6 +1415,9 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 else:
                     await query.message.reply_text(get_text(user_id, 'transfer_request_error', context), reply_markup=get_main_keyboard(user_id, context))
             except Exception as e:
+                import traceback
+                print("❌ ОШИБКА В request_transfer:", file=sys.stderr)
+                traceback.print_exc(file=sys.stderr)
                 logger.error(f"❌ Ошибка в request_transfer: {e}", exc_info=True)
                 await query.message.reply_text("❌ Внутренняя ошибка. Проверьте логи.")
             return
