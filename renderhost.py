@@ -1456,6 +1456,338 @@ async def admin_balance_command(update: Update, context: ContextTypes.DEFAULT_TY
     except Exception as e:
         logger.error(f"Ошибка в admin_balance_command: {e}")
         await update.message.reply_text("Произошла ошибка при получении статистики")
+# ------------------ ОБРАБОТЧИК КОЛБЭКОВ ------------------
+async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        query = update.callback_query
+        await query.answer()
+        user_id = query.from_user.id
+        data = query.data
+
+        if data.startswith("set_lang_"):
+            lang = data.replace("set_lang_", "")
+            if lang in [LANG_RU, LANG_EN]:
+                context.user_data['language'] = lang
+                await query.message.edit_text(get_text(user_id, 'language_selected', context), reply_markup=None)
+                await send_main_menu_with_photo(query.message.chat_id, context)
+            return
+
+        if 'language' not in context.user_data:
+            await query.message.reply_text(get_text(user_id, 'choose_language', context), reply_markup=get_language_keyboard())
+            return
+
+        if data == "back_to_menu":
+            await send_main_menu_with_photo(query.message.chat_id, context)
+            return
+
+        if data == "my_balance":
+            balance = get_user_balance(user_id)
+            stars_balance = get_user_stars_balance(user_id)
+            username = query.from_user.username or "Пользователь"
+            can_wallet, wallet_status, _ = get_withdrawal_status(user_id, 'wallet', context)
+            can_card, card_status, _ = get_withdrawal_status(user_id, 'card', context)
+            wallet_info = f"🪙 TON-кошелек: {wallet_status}"
+            card_info = f"💳 Карта: {card_status}"
+            deals = user_deals_count.get(user_id, 0)
+            deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL) if deals > 0 else ""
+            text = get_text(user_id, 'my_balance', context,
+                            username=username, balance=balance, stars_balance=stars_balance,
+                            wallet_info=wallet_info, card_info=card_info,
+                            fee=SYSTEM_FEE_PERCENT, min_withdraw=MIN_WITHDRAWAL_AMOUNT,
+                            deals_requirement=deals_requirement, deals=deals)
+            await query.message.reply_text(text, reply_markup=get_balance_keyboard(user_id, context))
+            return
+
+        if data == "withdraw_funds":
+            balance = get_user_balance(user_id)
+            stars_balance = get_user_stars_balance(user_id)
+            if balance < MIN_WITHDRAWAL_AMOUNT:
+                await query.message.reply_text(get_text(user_id, 'insufficient_balance', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=MIN_WITHDRAWAL_AMOUNT - balance), reply_markup=get_back_keyboard(user_id, context))
+                return
+            deals = user_deals_count.get(user_id, 0)
+            deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL) if deals > 0 else ""
+            await query.message.reply_text(get_text(user_id, 'withdraw_funds', context, balance=balance, stars_balance=stars_balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals_requirement=deals_requirement), reply_markup=get_withdrawal_keyboard(user_id, context))
+            return
+
+        if data == "withdraw_to_card":
+            balance = get_user_balance(user_id)
+            if balance < MIN_WITHDRAWAL_AMOUNT:
+                await query.message.reply_text(get_text(user_id, 'insufficient_balance', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=MIN_WITHDRAWAL_AMOUNT - balance), reply_markup=get_back_keyboard(user_id, context))
+                return
+            can_withdraw, status_text, needed = get_withdrawal_status(user_id, 'card', context)
+            if not can_withdraw:
+                if needed > 0:
+                    await query.message.reply_text(get_text(user_id, 'withdraw_deficit', context, needed=needed, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals=user_deals_count.get(user_id, 0), min_deals=MIN_DEALS_FOR_WITHDRAWAL), reply_markup=get_back_keyboard(user_id, context))
+                else:
+                    await query.message.reply_text(status_text, reply_markup=get_back_keyboard(user_id, context))
+                return
+            if user_id not in user_cards:
+                await query.message.reply_text(get_text(user_id, 'no_card', context), reply_markup=get_back_keyboard(user_id, context))
+                return
+            card_number = user_cards[user_id]
+            context.user_data['withdraw_method'] = 'card'
+            context.user_data['withdraw_details'] = card_number
+            context.user_data['waiting_for_withdraw_amount'] = True
+            await query.message.reply_text(get_text(user_id, 'withdraw_to_card', context, card=card_number, status_text=status_text, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            return
+
+        if data == "withdraw_to_wallet":
+            balance = get_user_balance(user_id)
+            if balance < MIN_WITHDRAWAL_AMOUNT:
+                await query.message.reply_text(get_text(user_id, 'insufficient_balance', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=MIN_WITHDRAWAL_AMOUNT - balance), reply_markup=get_back_keyboard(user_id, context))
+                return
+            can_withdraw, status_text, needed = get_withdrawal_status(user_id, 'wallet', context)
+            if not can_withdraw:
+                if needed > 0:
+                    await query.message.reply_text(get_text(user_id, 'withdraw_deficit', context, needed=needed, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals=user_deals_count.get(user_id, 0), min_deals=MIN_DEALS_FOR_WITHDRAWAL), reply_markup=get_back_keyboard(user_id, context))
+                else:
+                    await query.message.reply_text(status_text, reply_markup=get_back_keyboard(user_id, context))
+                return
+            if user_id not in user_wallets:
+                await query.message.reply_text(get_text(user_id, 'no_wallet', context), reply_markup=get_back_keyboard(user_id, context))
+                return
+            wallet_address = user_wallets[user_id]
+            context.user_data['withdraw_method'] = 'wallet'
+            context.user_data['withdraw_details'] = wallet_address
+            context.user_data['waiting_for_withdraw_amount'] = True
+            await query.message.reply_text(get_text(user_id, 'withdraw_to_wallet', context, wallet=wallet_address, status_text=status_text, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            return
+
+        if data == "withdraw_to_stars":
+            stars_balance = get_user_stars_balance(user_id)
+            if stars_balance < 1:
+                await query.message.reply_text(get_text(user_id, 'insufficient_stars_balance', context, stars_balance=stars_balance, need=1 - stars_balance), reply_markup=get_back_keyboard(user_id, context))
+                return
+            context.user_data['withdraw_type'] = 'stars'
+            context.user_data['waiting_for_stars_withdrawal'] = True
+            await query.message.reply_text(get_text(user_id, 'withdraw_to_stars', context, stars_balance=stars_balance), reply_markup=get_back_keyboard(user_id, context))
+            return
+
+        if data == "transaction_history":
+            await query.message.reply_text(get_text(user_id, 'transaction_history', context), reply_markup=get_balance_keyboard(user_id, context))
+            return
+
+        if data == "manage_requisites":
+            await query.message.reply_text(get_text(user_id, 'manage_requisites', context), reply_markup=get_requisites_keyboard(user_id, context))
+            return
+
+        if data == "create_deal":
+            await query.message.reply_text(get_text(user_id, 'create_deal_prompt', context), reply_markup=get_deal_keyboard(user_id, context))
+            return
+
+        if data in ["deal_ton", "deal_card", "deal_stars"]:
+            if data == "deal_ton":
+                currency = CURRENCY_TON
+            elif data == "deal_card":
+                currency = CURRENCY_RUB
+                if user_id not in user_cards:
+                    await query.message.reply_text(get_text(user_id, 'no_card', context), reply_markup=get_back_keyboard(user_id, context))
+                    return
+            else:
+                currency = CURRENCY_STARS
+            context.user_data['deal_currency'] = currency
+            unit = CURRENCY_UNITS.get(currency, "TON")
+            await query.message.reply_text(get_text(user_id, 'enter_amount', context, unit=unit), reply_markup=get_back_keyboard(user_id, context))
+            context.user_data['creating_deal'] = True
+            context.user_data['deal_stage'] = 'amount'
+            return
+
+        if data == "add_wallet":
+            current_wallet = user_wallets.get(user_id)
+            if current_wallet:
+                can_withdraw, status_text, needed = get_withdrawal_status(user_id, 'wallet', context)
+                await query.message.reply_text(get_text(user_id, 'add_wallet_change', context, wallet=current_wallet, status=status_text, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            else:
+                await query.message.reply_text(get_text(user_id, 'add_wallet_prompt', context, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            context.user_data['waiting_for_wallet'] = True
+            context.user_data['waiting_for_card'] = False
+            return
+
+        if data == "add_card":
+            current_card = user_cards.get(user_id)
+            if current_card:
+                can_withdraw, status_text, needed = get_withdrawal_status(user_id, 'card', context)
+                await query.message.reply_text(get_text(user_id, 'add_card_change', context, card=current_card, status=status_text, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            else:
+                await query.message.reply_text(get_text(user_id, 'add_card_prompt', context, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            context.user_data['waiting_for_card'] = True
+            context.user_data['waiting_for_wallet'] = False
+            return
+
+        if data == "referral_system":
+            await query.message.reply_text(get_text(user_id, 'referral_system', context), reply_markup=get_back_keyboard(user_id, context))
+            return
+
+        if data == "support":
+            await query.message.reply_text(get_text(user_id, 'support_message', context), reply_markup=get_support_keyboard(user_id, context))
+            return
+
+        # Обработка подтверждения оплаты
+        if data.startswith("confirm_payment_"):
+            deal_id = data.replace("confirm_payment_", "")
+            if deal_id not in deal_links:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            if user_id not in active_buyers or active_buyers[user_id] != deal_id:
+                await query.message.reply_text(get_text(user_id, 'not_buyer', context), reply_markup=get_main_keyboard(user_id, context))
+                return
+            if not is_authorized_user(user_id):
+                deal_data = deal_links[deal_id]
+                currency = deal_data.get('currency', CURRENCY_TON)
+                currency_unit = CURRENCY_UNITS.get(currency, "TON")
+                await query.message.reply_text(get_text(user_id, 'payment_confirmed_unauthorized', context, amount=deal_data['amount'], unit=currency_unit, description=deal_data['description'], deal_id=deal_id), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"⏳ Неавторизованный пользователь {user_id} нажал подтверждение оплаты для сделки {deal_id}")
+                return
+            buyer_username = query.from_user.username or "Пользователь"
+            seller_notified = await notify_seller_about_payment(deal_id, buyer_username, user_id, context)
+            buyer_notified = await notify_buyer_about_payment_confirmation(deal_id, user_id, context)
+            active_buyers.pop(user_id, None)
+            if seller_notified and buyer_notified:
+                current_deals = user_deals_count.get(user_id, 0)
+                await query.message.reply_text(get_text(user_id, 'payment_confirmed_authorized', context, deals=current_deals), reply_markup=get_main_keyboard(user_id, context))
+            else:
+                await query.message.reply_text(get_text(user_id, 'payment_confirmation_error', context), reply_markup=get_main_keyboard(user_id, context))
+            return
+
+        if data == "exit_deal":
+            active_buyers.pop(user_id, None)
+            await send_main_menu_with_photo(query.message.chat_id, context)
+            return
+
+        # Обработка заявки на передачу NFT (исправленная, с обработкой ошибок)
+        if data.startswith("request_transfer_"):
+            try:
+                deal_id = data.replace("request_transfer_", "")
+                if deal_id not in deal_links:
+                    await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                    return
+                if deal_id not in seller_transfers:
+                    await query.message.reply_text("❌ Сначала покупатель должен подтвердить оплату.", reply_markup=get_back_keyboard(user_id, context))
+                    return
+                deal_data = deal_links[deal_id]
+                if user_id != deal_data['user_id']:
+                    await query.message.reply_text(get_text(user_id, 'not_seller', context))
+                    return
+                if seller_transfers[deal_id]['transfer_requested']:
+                    await query.message.reply_text("❌ Заявка на передачу уже подана. Ожидайте подтверждения менеджера.")
+                    return
+                seller_transfers[deal_id]['transfer_requested'] = True
+                seller_transfers[deal_id]['seller_confirmed'] = True
+                seller_username = query.from_user.username or deal_data.get('username', 'Продавец')
+                managers_notified = await notify_managers_about_transfer_request(deal_id, seller_username, context)
+                currency = deal_data.get('currency', CURRENCY_TON)
+                currency_unit = CURRENCY_UNITS.get(currency, "TON")
+                net_amount = seller_transfers[deal_id]['net_amount']
+                if managers_notified:
+                    await query.message.reply_text(
+                        get_text(user_id, 'transfer_request_submitted', context,
+                                 deal_id=deal_id, description=deal_data['description'],
+                                 net=net_amount, currency_unit=currency_unit),
+                        reply_markup=get_back_keyboard(user_id, context))
+                    logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}")
+                else:
+                    await query.message.reply_text(get_text(user_id, 'transfer_request_error', context), reply_markup=get_main_keyboard(user_id, context))
+            except Exception as e:
+                import traceback
+                print(f"❌ ОШИБКА В request_transfer: {e}", file=sys.stderr)
+                traceback.print_exc(file=sys.stderr)
+                logger.error(f"❌ Ошибка в request_transfer: {e}", exc_info=True)
+                await query.message.reply_text("❌ Внутренняя ошибка. Проверьте логи.")
+            return
+
+        # Обработка подтверждения менеджером
+        if data.startswith("manager_confirm_"):
+            deal_id = data.replace("manager_confirm_", "")
+            if not is_manager(user_id):
+                await query.message.reply_text("❌ Эта функция доступна только менеджерам")
+                return
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            if not seller_transfers[deal_id]['transfer_requested']:
+                await query.message.reply_text("❌ Продавец еще не подал заявку на передачу NFT")
+                return
+            if seller_transfers[deal_id]['manager_confirmed']:
+                await query.message.reply_text("❌ Передача уже была подтверждена менеджером ранее")
+                return
+            seller_transfers[deal_id]['manager_confirmed'] = True
+            buyer_notified = await notify_buyer_about_manager_confirmation(deal_id, context)
+            if buyer_notified:
+                await query.message.reply_text(get_text(user_id, 'manager_confirmed', context, deal_id=deal_id), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"✅ Менеджер {user_id} подтвердил получение NFT для сделки {deal_id}, запрос отправлен покупателю")
+            else:
+                await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
+            return
+
+        # Обработка отклонения менеджером
+        if data.startswith("manager_reject_"):
+            deal_id = data.replace("manager_reject_", "")
+            if not is_manager(user_id):
+                await query.message.reply_text("❌ Эта функция доступна только менеджерам")
+                return
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            seller_transfers[deal_id]['transfer_requested'] = False
+            seller_transfers[deal_id]['seller_confirmed'] = False
+            seller_notified = await notify_seller_about_manager_rejection(deal_id, context)
+            if seller_notified:
+                await query.message.reply_text(get_text(user_id, 'manager_rejected', context), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"❌ Менеджер {user_id} отклонил заявку на передачу NFT для сделки {deal_id}")
+            else:
+                await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
+            return
+
+        # Обработка подтверждения получения покупателем
+        if data.startswith("confirm_receipt_"):
+            deal_id = data.replace("confirm_receipt_", "")
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            if user_id != seller_transfers[deal_id]['buyer_id']:
+                await query.message.reply_text(get_text(user_id, 'not_buyer', context))
+                return
+            if not seller_transfers[deal_id]['manager_confirmed']:
+                await query.message.reply_text("❌ Менеджер еще не подтвердил получение NFT.", reply_markup=get_back_keyboard(user_id, context))
+                return
+            if seller_transfers[deal_id].get('buyer_receipt_confirmed', False):
+                await query.message.reply_text("✅ Вы уже подтвердили получение товара.")
+                return
+            seller_transfers[deal_id]['buyer_receipt_confirmed'] = True
+            await finalize_deal_after_buyer_confirmation(deal_id, context)
+            await query.message.reply_text(get_text(user_id, 'buyer_receipt_confirmed', context, deal_id=deal_id, description=deal_links[deal_id]['description']), reply_markup=get_back_keyboard(user_id, context))
+            return
+
+        # Обработка отмены сделки продавцом
+        if data.startswith("cancel_deal_"):
+            deal_id = data.replace("cancel_deal_", "")
+            if deal_id not in deal_links:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            deal_data = deal_links[deal_id]
+            if user_id != deal_data['user_id']:
+                await query.message.reply_text(get_text(user_id, 'not_seller', context))
+                return
+            del deal_links[deal_id]
+            if deal_id in seller_transfers:
+                del seller_transfers[deal_id]
+            for buyer_id, active_deal_id in list(active_buyers.items()):
+                if active_deal_id == deal_id:
+                    del active_buyers[buyer_id]
+                    try:
+                        await context.bot.send_message(chat_id=buyer_id, text=get_text(buyer_id, 'buyer_deal_cancelled', context, deal_id=deal_id), reply_markup=get_main_keyboard(buyer_id, context))
+                    except:
+                        pass
+            await query.message.reply_text(get_text(user_id, 'deal_cancelled', context, deal_id=deal_id), reply_markup=get_main_keyboard(user_id, context))
+            logger.info(f"❌ Сделка {deal_id} отменена продавцом {user_id}")
+            return
+
+    except Exception as e:
+        logger.error(f"Ошибка в handle_callback_query: {e}", exc_info=True)
+        try:
+            await update.callback_query.message.reply_text("Произошла ошибка. Пожалуйста, попробуйте еще раз.")
+        except:
+            pass
 # ------------------ ОБРАБОТЧИК СООБЩЕНИЙ ------------------
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
@@ -1698,3 +2030,4 @@ def run_bot():
 if __name__ == "__main__":
     threading.Thread(target=run_http_server, daemon=True).start()
     run_bot()
+
