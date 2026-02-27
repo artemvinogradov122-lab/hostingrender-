@@ -1,5 +1,6 @@
 import logging
 import random
+import re
 import string
 import asyncio
 import sys
@@ -57,7 +58,8 @@ TEXTS = {
         'btn_deal_card': "💳На карту",
         'btn_deal_stars': "⭐️Звезды",
         'enter_amount': "💼 Создание сделки\n\nВведите сумму {unit} в формате: 100.5",
-        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке за {amount} {unit}:\n\nПример: 10 Кепок и Пепе...",
+        'enter_description': "📝 Укажите ссылку на подарок NFT, который вы продаете за {amount} {unit}:\n\nДопустимые форматы:\n• t.me/nft/PlushPepe-1\n• http://t.me/nft/PlushPepe-1\n• https://t.me/nft/PlushPepe-1",
+        'invalid_description': "❌ Неверная ссылка на NFT-подарок. Используйте один из форматов:\n• t.me/nft/PlushPepe-1\n• http://t.me/nft/PlushPepe-1\n• https://t.me/nft/PlushPepe-1",
         'invalid_amount': "❌ Некорректный формат суммы. Используйте формат 100.5 {unit}",
         'deal_created': (
             "✅ Сделка успешно создана!\n\n"
@@ -316,9 +318,9 @@ TEXTS = {
             "🔗 Сделка: #{deal_id}\n"
             "📦 Товар: {description}\n"
             "💰 К зачислению: {net:.2f} руб\n\n"
-            "📞 Менеджеры уведомлены о вашей заявке.\n"
-            "⏳ Ожидайте подтверждения получения NFT от менеджера.\n\n"
-            "ℹ️ Как только менеджер подтвердит получение NFT, сумма {net:.2f} руб будет зачислена на ваш баланс."
+            "📞 Менеджеры и покупатель уведомлены о вашей заявке.\n"
+            "⏳ Ожидайте подтверждения получения NFT от менеджера или покупателя.\n\n"
+            "ℹ️ Как только менеджер или покупатель подтвердит получение NFT, сумма {net:.2f} руб будет зачислена на ваш баланс."
         ),
         'transfer_request_error': "⚠️ Заявка подана, но возникли проблемы с уведомлением менеджеров. Свяжитесь с поддержкой.",
 
@@ -339,6 +341,17 @@ TEXTS = {
         'btn_manager_confirm': "✅ Подтвердить получение NFT",
         'btn_manager_reject': "❌ NFT не получен",
 
+        # ---------- Уведомление покупателю о запросе проверки ----------
+        'buyer_transfer_request': (
+            "📦 ПРОДАВЕЦ ЗАЯВИЛ О ПЕРЕДАЧЕ NFT\n\n"
+            "🔗 ID сделки: #{deal_id}\n"
+            "👤 Продавец: @{seller}\n"
+            "💎 Товар: {description}\n\n"
+            "⚠️ Пожалуйста, проверьте, что NFT действительно передан, и подтвердите ниже."
+        ),
+        'btn_buyer_confirm': "✅ Подтвердить получение NFT",
+        'buyer_notified_about_transfer': "✅ Покупатель уведомлен и может подтвердить получение NFT.",
+
         # ---------- Подтверждение менеджера ----------
         'manager_confirmed': (
             "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА!\n\n"
@@ -355,23 +368,25 @@ TEXTS = {
             "Он должен передать NFT и снова подать заявку."
         ),
         'manager_action_error': "⚠️ Подтверждение получено, но возникли проблемы с уведомлениями.",
+        'transfer_already_confirmed': "❌ Передача уже была подтверждена ранее",
+        'transfer_not_requested': "❌ Продавец еще не подал заявку на передачу NFT",
 
         # ---------- Уведомление покупателю о завершении ----------
         'buyer_deal_completed': (
             "🎉 СДЕЛКА ЗАВЕРШЕНА УСПЕШНО!\n\n"
-            "✅ Менеджер подтвердил получение NFT от продавца\n"
+            "✅ Получение NFT от продавца подтверждено\n"
             "👤 Продавец: @{seller}\n"
             "💰 Сумма: {amount} {unit}\n"
             "📦 Товар: {description}\n"
             "🔗 ID сделки: #{deal_id}\n\n"
-            "📢 Ожидайте получения товара от менеджера\n\n"
+            "📢 Ожидайте получение товара\n\n"
             "⭐️ Спасибо за использование Crypto Deals!\n"
             "Ваша надежность повышена на 1 пункт."
         ),
 
         # ---------- Уведомление продавцу о зачислении ----------
         'seller_funds_credited': (
-            "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА МЕНЕДЖЕРОМ!\n\n"
+            "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА ({confirmer})!\n\n"
             "🔗 Сделка: #{deal_id}\n"
             "📦 Товар: {description}\n"
             "💰 Сумма сделки: {amount} руб\n"
@@ -487,7 +502,8 @@ TEXTS = {
         'btn_deal_card': "💳To card",
         'btn_deal_stars': "⭐️Stars",
         'enter_amount': "💼 Creating a deal\n\nEnter amount in {unit} (e.g., 100.5):",
-        'enter_description': "📝 Describe what you are offering in this deal for {amount} {unit}:\n\nExample: 10 Caps and Pepes...",
+        'enter_description': "📝 Enter the NFT gift link you are selling for {amount} {unit}:\n\nAllowed formats:\n• t.me/nft/PlushPepe-1\n• http://t.me/nft/PlushPepe-1\n• https://t.me/nft/PlushPepe-1",
+        'invalid_description': "❌ Invalid NFT gift link. Use one of these formats:\n• t.me/nft/PlushPepe-1\n• http://t.me/nft/PlushPepe-1\n• https://t.me/nft/PlushPepe-1",
         'invalid_amount': "❌ Invalid amount format. Use format like 100.5 {unit}",
         'deal_created': (
             "✅ Deal successfully created!\n\n"
@@ -740,9 +756,9 @@ TEXTS = {
             "🔗 Deal: #{deal_id}\n"
             "📦 Item: {description}\n"
             "💰 To be credited: {net:.2f} RUB\n\n"
-            "📞 Managers notified of your request.\n"
-            "⏳ Await manager's confirmation of NFT receipt.\n\n"
-            "ℹ️ Once manager confirms NFT receipt, {net:.2f} RUB will be credited to your balance."
+            "📞 Managers and buyer were notified of your request.\n"
+            "⏳ Await confirmation of NFT receipt from manager or buyer.\n\n"
+            "ℹ️ Once manager or buyer confirms NFT receipt, {net:.2f} RUB will be credited to your balance."
         ),
         'transfer_request_error': "⚠️ Request submitted but there were issues notifying managers. Contact support.",
 
@@ -762,6 +778,16 @@ TEXTS = {
         'btn_manager_confirm': "✅ Confirm NFT receipt",
         'btn_manager_reject': "❌ NFT not received",
 
+        'buyer_transfer_request': (
+            "📦 SELLER CLAIMED NFT TRANSFER\n\n"
+            "🔗 Deal ID: #{deal_id}\n"
+            "👤 Seller: @{seller}\n"
+            "💎 Item: {description}\n\n"
+            "⚠️ Please verify NFT was actually transferred and confirm below."
+        ),
+        'btn_buyer_confirm': "✅ Confirm NFT receipt",
+        'buyer_notified_about_transfer': "✅ Buyer notified and can confirm NFT receipt.",
+
         'manager_confirmed': (
             "✅ NFT TRANSFER CONFIRMED!\n\n"
             "🔗 Deal: #{deal_id}\n"
@@ -777,21 +803,23 @@ TEXTS = {
             "They must transfer NFT and request again."
         ),
         'manager_action_error': "⚠️ Confirmation received but there were issues with notifications.",
+        'transfer_already_confirmed': "❌ Transfer was already confirmed earlier",
+        'transfer_not_requested': "❌ Seller has not submitted NFT transfer request yet",
 
         'buyer_deal_completed': (
             "🎉 DEAL SUCCESSFULLY COMPLETED!\n\n"
-            "✅ Manager confirmed NFT receipt from seller\n"
+            "✅ NFT receipt from seller has been confirmed\n"
             "👤 Seller: @{seller}\n"
             "💰 Amount: {amount} {unit}\n"
             "📦 Item: {description}\n"
             "🔗 Deal ID: #{deal_id}\n\n"
-            "📢 Expect to receive item from manager\n\n"
+            "📢 Expect to receive the item\n\n"
             "⭐️ Thank you for using Crypto Deals!\n"
             "Your reliability increased by 1 point."
         ),
 
         'seller_funds_credited': (
-            "✅ MANAGER CONFIRMED NFT TRANSFER!\n\n"
+            "✅ NFT TRANSFER CONFIRMED ({confirmer})!\n\n"
             "🔗 Deal: #{deal_id}\n"
             "📦 Item: {description}\n"
             "💰 Deal amount: {amount} RUB\n"
@@ -873,7 +901,7 @@ TEXTS = {
 # ------------------ Функция получения текста ------------------
 def get_text(user_id: int, key: str, context: ContextTypes.DEFAULT_TYPE, **kwargs) -> str:
     """Возвращает локализованный текст для пользователя."""
-    lang = context.user_data.get('language', LANG_RU)
+    lang = context.user_data.get('language') or user_languages.get(user_id, LANG_RU)
     text = TEXTS.get(lang, TEXTS[LANG_RU]).get(key, f"[MISSING TEXT: {key}]")
     if kwargs:
         try:
@@ -900,6 +928,7 @@ user_deals_count = {}
 seller_transfers = {}
 user_balances = {}
 pending_withdrawals = {}
+user_languages = {}
 
 CURRENCY_TON = "TON"
 CURRENCY_STARS = "Звезды"
@@ -914,6 +943,12 @@ CURRENCY_UNITS = {
 SYSTEM_FEE_PERCENT = 1
 MIN_WITHDRAWAL_AMOUNT = 500
 MIN_DEALS_FOR_WITHDRAWAL = 3
+
+NFT_GIFT_LINK_PATTERN = re.compile(r'^(?:https?://)?t\.me/nft/[A-Za-z0-9_-]+-\d+$', re.IGNORECASE)
+
+def is_valid_nft_gift_link(value: str) -> bool:
+    return bool(NFT_GIFT_LINK_PATTERN.fullmatch(value.strip()))
+
 # ------------------ ФУНКЦИИ ПРОВЕРКИ ВЫВОДА ------------------
 def get_withdrawal_status(user_id: int, method: str, context: ContextTypes.DEFAULT_TYPE) -> tuple:
     """
@@ -1035,6 +1070,15 @@ def get_manager_confirmation_keyboard(deal_id: str, user_id: int, context: Conte
                               callback_data=f"manager_confirm_{deal_id}")],
         [InlineKeyboardButton(get_text(user_id, 'btn_manager_reject', context),
                               callback_data=f"manager_reject_{deal_id}")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_buyer_confirmation_keyboard(deal_id: str, user_id: int, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [InlineKeyboardButton(get_text(user_id, 'btn_buyer_confirm', context),
+                              callback_data=f"buyer_confirm_{deal_id}")],
+        [InlineKeyboardButton(get_text(user_id, 'btn_exit_deal', context), callback_data="exit_deal")]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -1282,6 +1326,28 @@ async def notify_managers_about_transfer_request(deal_id: str, seller_username: 
         return notified_managers > 0
     return False
 
+async def notify_buyer_about_transfer_request(deal_id: str, seller_username: str,
+                                              context: ContextTypes.DEFAULT_TYPE):
+    if deal_id in deal_links and deal_id in seller_transfers:
+        transfer_info = seller_transfers[deal_id]
+        buyer_id = transfer_info['buyer_id']
+        deal_data = deal_links[deal_id]
+        text = get_text(buyer_id, 'buyer_transfer_request', context,
+                        deal_id=deal_id, seller=seller_username, description=deal_data['description'])
+        try:
+            await context.bot.send_message(
+                chat_id=buyer_id,
+                text=text,
+                reply_markup=get_buyer_confirmation_keyboard(deal_id, buyer_id, context)
+            )
+            logger.info(f"✅ Уведомление о заявке на передачу отправлено покупателю {buyer_id}")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Не удалось отправить покупателю запрос подтверждения передачи: {e}")
+            return False
+    return False
+
+
 async def notify_buyer_about_transfer_confirmation(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
     if deal_id in deal_links and deal_id in seller_transfers:
         deal_data = deal_links[deal_id]
@@ -1305,7 +1371,7 @@ async def notify_buyer_about_transfer_confirmation(deal_id: str, context: Contex
             return False
     return False
 
-async def notify_seller_about_manager_confirmation(deal_id: str, context: ContextTypes.DEFAULT_TYPE):
+async def notify_seller_about_transfer_confirmation(deal_id: str, confirmer: str, context: ContextTypes.DEFAULT_TYPE):
     if deal_id in deal_links and deal_id in seller_transfers:
         deal_data = deal_links[deal_id]
         transfer_info = seller_transfers[deal_id]
@@ -1319,7 +1385,7 @@ async def notify_seller_about_manager_confirmation(deal_id: str, context: Contex
 
         text = get_text(seller_id, 'seller_funds_credited', context,
                         deal_id=deal_id, description=deal_data['description'],
-                        amount=deal_amount, fee=fee, net=net_amount, balance=new_balance)
+                        amount=deal_amount, fee=fee, net=net_amount, balance=new_balance, confirmer=confirmer)
         try:
             await context.bot.send_message(chat_id=seller_id, text=text,
                                            reply_markup=get_transfer_confirmed_keyboard(seller_id, context))
@@ -1397,10 +1463,19 @@ async def send_main_menu_with_photo(chat_id: int, context: ContextTypes.DEFAULT_
 
 
 # ------------------ ОБРАБОТЧИКИ КОМАНД ------------------
+def ensure_user_language(user_id: int, context: ContextTypes.DEFAULT_TYPE):
+    lang = context.user_data.get('language')
+    if not lang:
+        saved_lang = user_languages.get(user_id)
+        if saved_lang:
+            context.user_data['language'] = saved_lang
+            lang = saved_lang
+    return lang
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_id = update.effective_user.id
-        if 'language' not in context.user_data:
+        if not ensure_user_language(user_id, context):
             await update.message.reply_text(
                 get_text(user_id, 'choose_language', context),
                 reply_markup=get_language_keyboard()
@@ -1844,6 +1919,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             lang = data.replace("set_lang_", "")
             if lang in [LANG_RU, LANG_EN]:
                 context.user_data['language'] = lang
+                user_languages[user_id] = lang
                 await query.message.edit_text(
                     get_text(user_id, 'language_selected', context),
                     reply_markup=None
@@ -1851,7 +1927,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 await send_main_menu_with_photo(query.message.chat_id, context)
             return
 
-        if 'language' not in context.user_data:
+        if not ensure_user_language(user_id, context):
             await query.message.reply_text(
                 get_text(user_id, 'choose_language', context),
                 reply_markup=get_language_keyboard()
@@ -1873,8 +1949,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             card_info = f"💳 Карта: {card_status}"
 
             deals = user_deals_count.get(user_id, 0)
-            # Показываем требование о сделках только если есть 1 или 2 сделки
-            if deals > 0 and deals < MIN_DEALS_FOR_WITHDRAWAL:
+            # Показываем требование о сделках, если есть хотя бы 1 сделка
+            if deals > 0:
                 deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL)
             else:
                 deals_requirement = ""
@@ -1899,7 +1975,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 return
 
             deals = user_deals_count.get(user_id, 0)
-            if deals > 0 and deals < MIN_DEALS_FOR_WITHDRAWAL:
+            if deals > 0:
                 deals_requirement = get_text(user_id, 'deals_requirement', context, min_deals=MIN_DEALS_FOR_WITHDRAWAL)
             else:
                 deals_requirement = ""
@@ -2169,6 +2245,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             seller_transfers[deal_id]['seller_confirmed'] = True
             seller_username = query.from_user.username or deal_data.get('username', 'Продавец')
             managers_notified = await notify_managers_about_transfer_request(deal_id, seller_username, context)
+            buyer_notified = await notify_buyer_about_transfer_request(deal_id, seller_username, context)
             net_amount = seller_transfers[deal_id]['net_amount']
             if managers_notified:
                 await query.message.reply_text(
@@ -2176,6 +2253,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                              deal_id=deal_id, description=deal_data['description'], net=net_amount),
                     reply_markup=get_back_keyboard(user_id, context)
                 )
+                if buyer_notified:
+                    await query.message.reply_text(get_text(user_id, 'buyer_notified_about_transfer', context))
                 logger.info(f"✅ Продавец {user_id} подал заявку на передачу NFT для сделки {deal_id}")
             else:
                 await query.message.reply_text(
@@ -2193,14 +2272,14 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
                 return
             if not seller_transfers[deal_id]['transfer_requested']:
-                await query.message.reply_text("❌ Продавец еще не подал заявку на передачу NFT")
+                await query.message.reply_text(get_text(user_id, 'transfer_not_requested', context))
                 return
             if seller_transfers[deal_id]['manager_confirmed']:
-                await query.message.reply_text("❌ Передача уже была подтверждена менеджером ранее")
+                await query.message.reply_text(get_text(user_id, 'transfer_already_confirmed', context))
                 return
             seller_transfers[deal_id]['manager_confirmed'] = True
             buyer_notified = await notify_buyer_about_transfer_confirmation(deal_id, context)
-            seller_notified = await notify_seller_about_manager_confirmation(deal_id, context)
+            seller_notified = await notify_seller_about_transfer_confirmation(deal_id, get_text(user_id, 'btn_manager_confirm', context), context)
             admin_notified = await notify_admin_about_completed_deal(deal_id, context)
             net_amount = seller_transfers[deal_id]['net_amount']
             if buyer_notified and seller_notified:
@@ -2209,6 +2288,40 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                     reply_markup=get_back_keyboard(user_id, context)
                 )
                 logger.info(f"✅ Менеджер {user_id} подтвердил получение NFT для сделки {deal_id}")
+            else:
+                await query.message.reply_text(
+                    get_text(user_id, 'manager_action_error', context),
+                    reply_markup=get_main_keyboard(user_id, context)
+                )
+            return
+
+        if data.startswith("buyer_confirm_"):
+            deal_id = data.replace("buyer_confirm_", "")
+            if deal_id not in deal_links or deal_id not in seller_transfers:
+                await query.message.reply_text(get_text(user_id, 'deal_not_found', context))
+                return
+            transfer_info = seller_transfers[deal_id]
+            if user_id != transfer_info['buyer_id']:
+                await query.message.reply_text(get_text(user_id, 'not_buyer', context))
+                return
+            if not transfer_info['transfer_requested']:
+                await query.message.reply_text(get_text(user_id, 'transfer_not_requested', context))
+                return
+            if transfer_info['manager_confirmed']:
+                await query.message.reply_text(get_text(user_id, 'transfer_already_confirmed', context))
+                return
+
+            transfer_info['manager_confirmed'] = True
+            buyer_notified = await notify_buyer_about_transfer_confirmation(deal_id, context)
+            seller_notified = await notify_seller_about_transfer_confirmation(deal_id, get_text(user_id, 'btn_buyer_confirm', context), context)
+            admin_notified = await notify_admin_about_completed_deal(deal_id, context)
+            net_amount = transfer_info['net_amount']
+            if buyer_notified and seller_notified:
+                await query.message.reply_text(
+                    get_text(user_id, 'manager_confirmed', context, deal_id=deal_id, net=net_amount),
+                    reply_markup=get_back_keyboard(user_id, context)
+                )
+                logger.info(f"✅ Покупатель {user_id} подтвердил получение NFT для сделки {deal_id}")
             else:
                 await query.message.reply_text(
                     get_text(user_id, 'manager_action_error', context),
@@ -2287,7 +2400,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = update.message.text
         user_id = update.message.from_user.id
 
-        if 'language' not in context.user_data:
+        if not ensure_user_language(user_id, context):
             await update.message.reply_text(
                 get_text(user_id, 'choose_language', context),
                 reply_markup=get_language_keyboard()
@@ -2319,6 +2432,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     )
             elif deal_stage == 'description':
                 description = text.strip()
+                if not is_valid_nft_gift_link(description):
+                    await update.message.reply_text(
+                        get_text(user_id, 'invalid_description', context),
+                        reply_markup=get_back_keyboard(user_id, context)
+                    )
+                    return
                 context.user_data['deal_description'] = description
                 deal_id = generate_deal_id()
                 currency = context.user_data.get('deal_currency', CURRENCY_TON)
@@ -2576,4 +2695,3 @@ def run_bot():
 if __name__ == "__main__":
     threading.Thread(target=run_http_server, daemon=True).start()
     run_bot()
-
