@@ -76,6 +76,7 @@ TEXTS = {
             "💰 ВАШ БАЛАНС\n\n"
             "👤 Пользователь: @{username}\n"
             "💵 Баланс: {balance:.2f} руб\n\n"
+            "⭐️ Баланс в Звездах: {stars_balance:.2f} Звезд\n\n"
             "💳 Информация о выводе средств:\n"
             "{wallet_info}\n"
             "{card_info}\n\n"
@@ -91,6 +92,7 @@ TEXTS = {
         'withdraw_funds': (
             "💰 ВЫВОД СРЕДСТВ\n\n"
             "💵 Доступно к выводу: {balance:.2f} руб\n"
+            "⭐️ Баланс в Звездах: {stars_balance:.2f} Звезд\n"
             "📋 Мин. сумма: {min_withdraw} руб\n"
             "{deals_requirement}"
             "Выберите способ вывода:"
@@ -356,7 +358,7 @@ TEXTS = {
         'manager_confirmed': (
             "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА!\n\n"
             "🔗 Сделка: #{deal_id}\n"
-            "💰 Зачислено продавцу: {net:.2f} руб\n"
+            "💰 Зачислено продавцу: {net:.2f} {unit}\n"
             "👤 Продавец уведомлен о подтверждении\n"
             "👤 Покупатель уведомлен о завершении сделки\n\n"
             "🎉 **Сделка успешно завершена!**"
@@ -389,11 +391,11 @@ TEXTS = {
             "✅ ПЕРЕДАЧА NFT ПОДТВЕРЖДЕНА ({confirmer})!\n\n"
             "🔗 Сделка: #{deal_id}\n"
             "📦 Товар: {description}\n"
-            "💰 Сумма сделки: {amount} руб\n"
-            "📊 Комиссия системы: {fee:.2f} руб\n\n"
+            "💰 Сумма сделки: {amount} {deal_unit}\n"
+            "📊 Комиссия системы: {fee:.2f} {deal_unit}\n\n"
             "💰 **СРЕДСТВА ЗАЧИСЛЕНЫ НА ВАШ БАЛАНС!**\n"
-            "💵 Зачислено: {net:.2f} руб\n"
-            "🏦 Текущий баланс: {balance:.2f} руб\n\n"
+            "💵 Зачислено: {net:.2f} {deal_unit}\n"
+            "🏦 Текущий баланс: {balance:.2f} {balance_unit}\n\n"
             "🎉 Сделка успешно завершена!\n"
             "Покупатель уведомлен о завершении сделки.\n\n"
             "⭐️ Спасибо за честную торговлю!\n"
@@ -519,6 +521,7 @@ TEXTS = {
             "💰 YOUR BALANCE\n\n"
             "👤 User: @{username}\n"
             "💵 Balance: {balance:.2f} RUB\n\n"
+            "⭐️ Stars balance: {stars_balance:.2f} Stars\n\n"
             "💳 Withdrawal information:\n"
             "{wallet_info}\n"
             "{card_info}\n\n"
@@ -534,6 +537,7 @@ TEXTS = {
         'withdraw_funds': (
             "💰 WITHDRAWAL\n\n"
             "💵 Available: {balance:.2f} RUB\n"
+            "⭐️ Stars balance: {stars_balance:.2f} Stars\n"
             "📋 Min amount: {min_withdraw} RUB\n"
             "{deals_requirement}"
             "Choose withdrawal method:"
@@ -791,7 +795,7 @@ TEXTS = {
         'manager_confirmed': (
             "✅ NFT TRANSFER CONFIRMED!\n\n"
             "🔗 Deal: #{deal_id}\n"
-            "💰 Credited to seller: {net:.2f} RUB\n"
+            "💰 Credited to seller: {net:.2f} {unit}\n"
             "👤 Seller notified of confirmation\n"
             "👤 Buyer notified of deal completion\n\n"
             "🎉 **Deal successfully completed!**"
@@ -822,11 +826,11 @@ TEXTS = {
             "✅ NFT TRANSFER CONFIRMED ({confirmer})!\n\n"
             "🔗 Deal: #{deal_id}\n"
             "📦 Item: {description}\n"
-            "💰 Deal amount: {amount} RUB\n"
-            "📊 System fee: {fee:.2f} RUB\n\n"
+            "💰 Deal amount: {amount} {deal_unit}\n"
+            "📊 System fee: {fee:.2f} {deal_unit}\n\n"
             "💰 **FUNDS CREDITED TO YOUR BALANCE!**\n"
-            "💵 Credited: {net:.2f} RUB\n"
-            "🏦 Current balance: {balance:.2f} RUB\n\n"
+            "💵 Credited: {net:.2f} {deal_unit}\n"
+            "🏦 Current balance: {balance:.2f} {balance_unit}\n\n"
             "🎉 Deal successfully completed!\n"
             "Buyer notified of completion.\n\n"
             "⭐️ Thank you for honest trading!\n"
@@ -927,6 +931,7 @@ authorized_users = set()
 user_deals_count = {}
 seller_transfers = {}
 user_balances = {}
+user_star_balances = {}
 pending_withdrawals = {}
 user_languages = {}
 
@@ -1106,6 +1111,10 @@ def get_user_balance(user_id: int) -> float:
     return user_balances.get(user_id, 0.0)
 
 
+def get_user_stars_balance(user_id: int) -> float:
+    return user_star_balances.get(user_id, 0.0)
+
+
 async def add_to_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
     current_balance = user_balances.get(user_id, 0.0)
     user_balances[user_id] = current_balance + amount
@@ -1123,6 +1132,24 @@ async def add_to_balance(user_id: int, amount: float, description: str, context:
         except Exception as e:
             logger.error(f"❌ Не удалось уведомить пользователя о зачислении: {e}")
     return user_balances[user_id]
+
+
+async def add_to_stars_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
+    current_balance = user_star_balances.get(user_id, 0.0)
+    user_star_balances[user_id] = current_balance + amount
+    logger.info(f"⭐️ Зачислено {amount} Звезд на баланс пользователя {user_id}. Новый Stars-баланс: {user_star_balances[user_id]}")
+    if context:
+        try:
+            await context.bot.send_message(
+                chat_id=user_id,
+                text=f"⭐️ ЗВЕЗДЫ ЗАЧИСЛЕНЫ НА БАЛАНС!\n\n"
+                     f"⭐️ Сумма: {amount:.2f} Звезд\n"
+                     f"📝 Причина: {description}\n"
+                     f"🏦 Текущий Stars-баланс: {user_star_balances[user_id]:.2f} Звезд"
+            )
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить пользователя о зачислении Звезд: {e}")
+    return user_star_balances[user_id]
 
 
 async def deduct_from_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
@@ -1379,13 +1406,24 @@ async def notify_seller_about_transfer_confirmation(deal_id: str, confirmer: str
         net_amount = transfer_info['net_amount']
         fee = transfer_info['fee']
         deal_amount = transfer_info['deal_amount']
+        currency = deal_data.get('currency', CURRENCY_TON)
 
-        new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
+        if currency == CURRENCY_STARS:
+            new_balance = await add_to_stars_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
+            deal_unit = CURRENCY_UNITS.get(CURRENCY_STARS, 'Звезд')
+            balance_unit = deal_unit
+        else:
+            new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
+            deal_unit = CURRENCY_UNITS.get(CURRENCY_RUB, 'Руб')
+            balance_unit = 'руб'
+
         user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
 
         text = get_text(seller_id, 'seller_funds_credited', context,
                         deal_id=deal_id, description=deal_data['description'],
-                        amount=deal_amount, fee=fee, net=net_amount, balance=new_balance, confirmer=confirmer)
+                        amount=deal_amount, fee=fee, net=net_amount,
+                        balance=new_balance, deal_unit=deal_unit, balance_unit=balance_unit,
+                        confirmer=confirmer)
         try:
             await context.bot.send_message(chat_id=seller_id, text=text,
                                            reply_markup=get_transfer_confirmed_keyboard(seller_id, context))
@@ -1881,12 +1919,14 @@ async def admin_balance_command(update: Update, context: ContextTypes.DEFAULT_TY
         total_balance = sum(user_balances.values())
         total_users = len(user_balances)
         total_pending_withdrawals = sum(w['amount'] for w in pending_withdrawals.values() if isinstance(w, dict))
+        total_stars_balance = sum(user_star_balances.values())
 
         text = (
             f"💰 ОБЩАЯ СТАТИСТИКА БАЛАНСОВ\n\n"
             f"👥 Всего пользователей с балансом: {total_users}\n"
             f"💵 Общая сумма на балансах: {total_balance:.2f} руб\n"
             f"⏳ Ожидающие выводы: {total_pending_withdrawals:.2f} руб\n"
+            f"⭐️ Общая сумма Stars на балансах: {total_stars_balance:.2f} Звезд\n"
             f"👑 Комиссия системы: {SYSTEM_FEE_PERCENT}%\n"
             f"💸 Мин. вывод: {MIN_WITHDRAWAL_AMOUNT} руб\n"
             f"📊 Требуется сделок для вывода: {MIN_DEALS_FOR_WITHDRAWAL}\n\n"
@@ -1955,8 +1995,9 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             else:
                 deals_requirement = ""
 
+            stars_balance = get_user_stars_balance(user_id)
             text = get_text(user_id, 'my_balance', context,
-                            username=username, balance=balance,
+                            username=username, balance=balance, stars_balance=stars_balance,
                             wallet_info=wallet_info, card_info=card_info,
                             fee=SYSTEM_FEE_PERCENT, min_withdraw=MIN_WITHDRAWAL_AMOUNT,
                             deals_requirement=deals_requirement, deals=deals)
@@ -1982,7 +2023,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
             await query.message.reply_text(
                 get_text(user_id, 'withdraw_funds', context,
-                         balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT,
+                         balance=balance, stars_balance=get_user_stars_balance(user_id),
+                         min_withdraw=MIN_WITHDRAWAL_AMOUNT,
                          deals_requirement=deals_requirement),
                 reply_markup=get_withdrawal_keyboard(user_id, context)
             )
@@ -2284,7 +2326,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             net_amount = seller_transfers[deal_id]['net_amount']
             if buyer_notified and seller_notified:
                 await query.message.reply_text(
-                    get_text(user_id, 'manager_confirmed', context, net=net_amount),
+                    get_text(user_id, 'manager_confirmed', context, deal_id=deal_id, net=net_amount, unit=CURRENCY_UNITS.get(deal_links[deal_id].get('currency', CURRENCY_RUB), 'Руб')),
                     reply_markup=get_back_keyboard(user_id, context)
                 )
                 logger.info(f"✅ Менеджер {user_id} подтвердил получение NFT для сделки {deal_id}")
@@ -2318,7 +2360,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             net_amount = transfer_info['net_amount']
             if buyer_notified and seller_notified:
                 await query.message.reply_text(
-                    get_text(user_id, 'manager_confirmed', context, deal_id=deal_id, net=net_amount),
+                    get_text(user_id, 'manager_confirmed', context, deal_id=deal_id, net=net_amount, unit=CURRENCY_UNITS.get(deal_links[deal_id].get('currency', CURRENCY_RUB), 'Руб')),
                     reply_markup=get_back_keyboard(user_id, context)
                 )
                 logger.info(f"✅ Покупатель {user_id} подтвердил получение NFT для сделки {deal_id}")
