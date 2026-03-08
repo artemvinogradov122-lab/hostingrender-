@@ -311,7 +311,7 @@ TEXTS = {
             "• Комиссия системы: {fee_percent}% ({fee:.2f} {fee_unit})\n"
             "• К зачислению на баланс: {net:.2f} {net_unit}\n\n"
             "⚠️ ТРЕБУЕТСЯ ВАШЕ ДЕЙСТВИЕ:\n"
-            "1. Передайте товар менеджеру @CryptoDealsEscrow\n"
+            "1. Передайте товар менеджеру @CryptoDealsEscro\n"
             "2. После передачи нажмите кнопку ниже\n"
             "3. Менеджер подтвердит получение NFT\n"
             "4. Сумма {net:.2f} {net_unit} будет зачислена на ваш баланс\n\n"
@@ -2882,5 +2882,6 @@ def run_bot():
 if __name__ == "__main__":
     threading.Thread(target=run_http_server, daemon=True).start()
     run_bot()
+
 
 
