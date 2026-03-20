@@ -57,7 +57,7 @@ TEXTS = {
         'btn_deal_card': "💳На карту",
         'btn_deal_stars': "⭐️Звезды",
         'enter_amount': "💼 Создание сделки\n\nВведите сумму {unit} в формате: 100.5",
-        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке. Пример: 10 Кепок и Пепе...",
+        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке.{amount} {unit}Пример: 10 Кепок и Пепе...",
         'invalid_amount': "❌ Некорректный формат суммы. Используйте формат 100.5 {unit}",
         'deal_created': (
             "✅ Сделка успешно создана!\n\n"
@@ -95,6 +95,7 @@ TEXTS = {
         ),
         'btn_withdraw_card': "💳 На карту",
         'btn_withdraw_wallet': "🪙 На TON-кошелек",
+        'btn_withdraw_stars': "⭐️ На Stars",
         'insufficient_balance': (
             "❌ НЕДОСТАТОЧНО СРЕДСТВ ДЛЯ ВЫВОДА!\n\n"
             "💵 Ваш баланс: {balance:.2f} руб\n"
@@ -116,6 +117,12 @@ TEXTS = {
             "💵 Доступно: {balance:.2f} руб\n"
             "💰 Мин. сумма: {min_withdraw} руб\n\n"
             "📝 Введите сумму для вывода в рублях:"
+        ),
+        'withdraw_to_stars': (
+            "⭐️ ВЫВОД НА STARS\n\n"
+            "🏦 Баланс: {balance:.2f} ⭐️\n"
+            "💰 Мин. сумма: {min_withdraw} ⭐️\n\n"
+            "📝 Введите сумму для вывода в звездах:"
         ),
         'withdraw_immediate': "✅ Вывод сразу (новый пользователь)",
         'withdraw_needed': "⏳ Нужно ещё {needed} сделок",
@@ -1000,6 +1007,7 @@ def get_withdrawal_keyboard(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_card', context), callback_data="withdraw_to_card")],
         [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_wallet', context), callback_data="withdraw_to_wallet")],
+        [InlineKeyboardButton(get_text(user_id, 'btn_withdraw_stars', context), callback_data="withdraw_to_stars")],
         [InlineKeyboardButton(get_text(user_id, 'back_to_menu', context), callback_data="my_balance")]
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -2003,6 +2011,31 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 get_text(user_id, 'withdraw_to_wallet', context,
                          wallet=wallet_address, status_text=status_text,
                          balance=balance, min_withdraw=MIN_WITHDRAWAL_AMOUNT),
+                reply_markup=get_back_keyboard(user_id, context),
+                parse_mode='HTML'
+            )
+            return
+
+        if data == "withdraw_to_stars":
+            balance = get_user_balance(user_id)
+            min_withdraw = MIN_WITHDRAWAL_AMOUNT
+
+            if balance < min_withdraw:
+                await query.message.reply_text(
+                    get_text(user_id, 'insufficient_balance', context,
+                             balance=balance, min_withdraw=min_withdraw,
+                             need=min_withdraw - balance),
+                    reply_markup=get_back_keyboard(user_id, context)
+                )
+                return
+
+            context.user_data['withdraw_method'] = 'Stars'
+            context.user_data['withdraw_details'] = 'Stars'
+            context.user_data['waiting_for_withdraw_amount'] = True
+
+            await query.message.reply_text(
+                get_text(user_id, 'withdraw_to_stars', context,
+                         balance=balance, min_withdraw=min_withdraw),
                 reply_markup=get_back_keyboard(user_id, context),
                 parse_mode='HTML'
             )
