@@ -2521,8 +2521,7 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
+
 # ===== КОД ДЛЯ ХОСТА =====
 from flask import Flask
 import threading
