@@ -4,6 +4,7 @@ import string
 import asyncio
 import sys
 import time
+import json
 from datetime import datetime, timedelta
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
@@ -151,6 +152,19 @@ TEXTS = {
         'withdraw_error': (
             "❌ **ОШИБКА ПРИ ОБРАБОТКЕ ВЫВОДА!**\n\n"
             "Пожалуйста, попробуйте позже или обратитесь в поддержку."
+        ),
+        'withdraw_success_stars': (
+            "✅ ЗАЯВКА НА ВЫВОД ЗВЕЗД ПРИНЯТА!\n\n"
+            "⭐️ Сумма: {amount:.2f} ⭐️\n"
+            "🎯 Получатель: {details}\n\n"
+            "⏳ Заявка отправлена на обработку администратору.\n"
+            "🏦 Текущий баланс: {balance:.2f} ⭐️"
+        ),
+        'insufficient_balance_stars': (
+            "❌ НЕДОСТАТОЧНО ЗВЕЗД ДЛЯ ВЫВОДА!\n\n"
+            "⭐️ Ваш баланс: {balance:.2f} ⭐️\n"
+            "💰 Мин. сумма вывода: {min_withdraw} ⭐️\n"
+            "💸 Не хватает: {need:.2f} ⭐️"
         ),
         'transaction_history': "📊 **ИСТОРИЯ ОПЕРАЦИЙ**\n\nРаздел находится в разработке.",
 
@@ -882,7 +896,8 @@ TEXTS = {
 # ------------------ Функция получения текста ------------------
 def get_text(user_id: int, key: str, context: ContextTypes.DEFAULT_TYPE, **kwargs) -> str:
     """Возвращает локализованный текст для пользователя."""
-    lang = context.user_data.get('language', LANG_RU)
+    # Язык в context.user_data имеет приоритет (для смены языка в реальном времени)
+    lang = context.user_data.get('language', user_languages.get(user_id, LANG_RU))
     text = TEXTS.get(lang, TEXTS[LANG_RU]).get(key, f"[MISSING TEXT: {key}]")
     if kwargs:
         try:
@@ -891,12 +906,29 @@ def get_text(user_id: int, key: str, context: ContextTypes.DEFAULT_TYPE, **kwarg
             logger.error(f"Missing format key {e} in text {key}")
     return text
 
+# ------------------ СОХРАНЕНИЕ И ЗАГРУЗКА ЯЗЫКОВ ------------------
+def load_user_languages():
+    global user_languages
+    try:
+        with open(USER_LANGUAGES_FILE, 'r') as f:
+            loaded_languages = json.load(f)
+            # Ключи в JSON всегда строки, конвертируем их обратно в int
+            user_languages = {int(k): v for k, v in loaded_languages.items()}
+    except (FileNotFoundError, json.JSONDecodeError):
+        user_languages = {}
+
+def save_user_language(user_id: int, lang: str):
+    user_languages[user_id] = lang
+    with open(USER_LANGUAGES_FILE, 'w') as f:
+        json.dump(user_languages, f, indent=4)
+
 # ------------------ КОНСТАНТЫ ------------------
 IMAGE_URL = "https://ibb.co/b5WqH9RF"
 SUPPORT_URL = "https://t.me/CryptoDealsEscro"
 ADMIN_ID = 6764327072
 MANAGER_IDS = {994793292, 123456789, 6764327072, 8534029722}
 FIXED_TON_WALLET = "UQCCDZQoVkrNBsD9r6_Q-SQ1LeV7unXLfNkm27ZJFyqd8vZn"
+USER_LANGUAGES_FILE = 'user_languages.json'
 
 # Словари для хранения данных пользователей
 user_wallets = {}
@@ -909,6 +941,7 @@ seller_transfers = {}
 user_balances = {}
 pending_withdrawals = {}
 user_star_balances = {}
+user_languages = {}
 
 CURRENCY_TON = "TON"
 CURRENCY_STARS = "Звезды"
@@ -1262,8 +1295,8 @@ async def process_star_withdrawal(user_id: int, amount: float, target_username: 
 
         await context.bot.send_message(
             chat_id=user_id,
-            text=get_text(user_id, 'withdraw_success', context,
-                          amount=amount, method='⭐️ Stars', details=target_username, balance=get_user_star_balance(user_id))
+            text=get_text(user_id, 'withdraw_success_stars', context,
+                          amount=amount, details=target_username, balance=get_user_star_balance(user_id))
         )
         return True
     except Exception as e:
@@ -1504,13 +1537,15 @@ async def send_main_menu_with_photo(chat_id: int, context: ContextTypes.DEFAULT_
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_id = update.effective_user.id
-        if 'language' not in context.user_data:
+        # Проверяем, сохранен ли язык для пользователя
+        if user_id not in user_languages:
             await update.message.reply_text(
                 get_text(user_id, 'choose_language', context),
                 reply_markup=get_language_keyboard()
             )
             return
 
+        # Если язык уже есть, сразу переходим к делу
         if context.args:
             deal_id = context.args[0]
             await handle_deal_link(update, deal_id, context)
@@ -1949,6 +1984,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             lang = data.replace("set_lang_", "")
             if lang in [LANG_RU, LANG_EN]:
                 context.user_data['language'] = lang
+                save_user_language(user_id, lang)  # Сохраняем выбор
                 await query.message.edit_text(
                     get_text(user_id, 'language_selected', context),
                     reply_markup=None
@@ -2121,8 +2157,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
             if balance < min_withdraw:
                 await query.message.reply_text(
-                    # Using ruble text for now, can be localized later
-                    get_text(user_id, 'insufficient_balance', context,
+                    get_text(user_id, 'insufficient_balance_stars', context,
                              balance=balance, min_withdraw=min_withdraw,
                              need=min_withdraw - balance),
                     reply_markup=get_back_keyboard(user_id, context)
@@ -2561,7 +2596,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 if amount < min_withdraw:
                     await update.message.reply_text(
-                        get_text(user_id, 'insufficient_balance', context,
+                        get_text(user_id, 'insufficient_balance_stars', context,
                                  balance=balance, min_withdraw=min_withdraw,
                                  need=min_withdraw - amount),
                         reply_markup=get_back_keyboard(user_id, context)
@@ -2570,7 +2605,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 if amount > balance:
                     await update.message.reply_text(
-                        get_text(user_id, 'insufficient_balance', context,
+                        get_text(user_id, 'insufficient_balance_stars', context,
                                  balance=balance, min_withdraw=min_withdraw,
                                  need=amount - balance),
                         reply_markup=get_back_keyboard(user_id, context)
@@ -2674,6 +2709,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ------------------ ОСНОВНАЯ ФУНКЦИЯ ------------------
 def main():
     try:
+        load_user_languages()  # Загружаем языки при старте
         print("🔄 Запуск бота...")
         print("✅ Добавлена поддержка двух языков (русский/английский) с выбором при старте")
         print(f"📊 Для вывода необходимо {MIN_DEALS_FOR_WITHDRAWAL} успешных сделок (кроме новых пользователей)")
