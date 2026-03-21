@@ -73,8 +73,9 @@ TEXTS = {
         'my_balance': (
             "💰 ВАШ БАЛАНС\n\n"
             "👤 Пользователь: @{username}\n"
-            "💵 Баланс: {balance:.2f} руб\n\n"
-            "💳 Информация о выводе средств:\n"
+            "💵 Баланс: {balance:.2f} руб\n"
+            "{star_balance_text}"
+            "\n💳 Информация о выводе средств:\n"
             "{wallet_info}\n"
             "{card_info}\n\n"
             "📋 **Информация:**\n"
@@ -198,6 +199,7 @@ TEXTS = {
         ),
         'invalid_wallet': "❌ Неверный формат кошелька. Пожалуйста, проверьте адрес и попробуйте снова.",
         'invalid_card': "❌ Неверный формат номера карты. Пожалуйста, проверьте номер и попробуйте снова.",
+        'enter_star_withdraw_username': "👤 Пожалуйста, введите юзернейм аккаунта для получения {amount} ⭐️",
 
         # ---------- Сделки (покупатель) ----------
         'deal_info_buyer': (
@@ -906,6 +908,7 @@ user_deals_count = {}
 seller_transfers = {}
 user_balances = {}
 pending_withdrawals = {}
+user_star_balances = {}
 
 CURRENCY_TON = "TON"
 CURRENCY_STARS = "Звезды"
@@ -1070,6 +1073,9 @@ def generate_deal_id():
 def get_user_balance(user_id: int) -> float:
     return user_balances.get(user_id, 0.0)
 
+def get_user_star_balance(user_id: int) -> float:
+    return user_star_balances.get(user_id, 0.0)
+
 
 async def add_to_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
     current_balance = user_balances.get(user_id, 0.0)
@@ -1088,6 +1094,24 @@ async def add_to_balance(user_id: int, amount: float, description: str, context:
         except Exception as e:
             logger.error(f"❌ Не удалось уведомить пользователя о зачислении: {e}")
     return user_balances[user_id]
+
+async def add_to_star_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
+    current_balance = user_star_balances.get(user_id, 0.0)
+    user_star_balances[user_id] = current_balance + amount
+    logger.info(f"⭐️ Зачислено {amount} звезд на баланс пользователя {user_id}. Новый баланс: {user_star_balances[user_id]}")
+    if context:
+        try:
+            await context.bot.send_message(
+                chat_id=user_id,
+                text=f"⭐️ СРЕДСТВА ЗАЧИСЛЕНЫ НА ВАШ БАЛАНС!\n\n"
+                     f"💵 Сумма: {amount:.2f} ⭐️\n"
+                     f"📝 Причина: {description}\n"
+                     f"🏦 Текущий баланс: {user_star_balances[user_id]:.2f} ⭐️\n\n"
+                     f"💳 Для вывода средств перейдите в раздел '💰Мой баланс'"
+            )
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить пользователя о зачислении звезд: {e}")
+    return user_star_balances[user_id]
 
 
 async def deduct_from_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
@@ -1108,6 +1132,26 @@ async def deduct_from_balance(user_id: int, amount: float, description: str, con
             )
         except Exception as e:
             logger.error(f"❌ Не удалось уведомить пользователя о списании: {e}")
+    return True
+
+async def deduct_from_star_balance(user_id: int, amount: float, description: str, context: ContextTypes.DEFAULT_TYPE = None):
+    current_balance = user_star_balances.get(user_id, 0.0)
+    if current_balance < amount:
+        logger.error(f"❌ Недостаточно звезд у пользователя {user_id}: {current_balance} < {amount}")
+        return False
+    user_star_balances[user_id] = current_balance - amount
+    logger.info(f"⭐️ Списано {amount} звезд с баланса пользователя {user_id}. Новый баланс: {user_star_balances[user_id]}")
+    if context:
+        try:
+            await context.bot.send_message(
+                chat_id=user_id,
+                text=f"⭐️ СРЕДСТВА СПИСАНЫ С БАЛАНСА!\n\n"
+                     f"💵 Сумма: {amount:.2f} ⭐️\n"
+                     f"📝 Причина: {description}\n"
+                     f"🏦 Текущий баланс: {user_star_balances[user_id]:.2f} ⭐️"
+            )
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить пользователя о списании звезд: {e}")
     return True
 
 
@@ -1187,6 +1231,49 @@ async def process_withdrawal(user_id: int, amount: float, method: str, details: 
             text=get_text(user_id, 'withdraw_error', context)
         )
         return False
+
+async def process_star_withdrawal(user_id: int, amount: float, target_username: str, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        success = await deduct_from_star_balance(user_id, amount, f"Вывод звезд на {target_username}", context)
+        if not success:
+            return False
+
+        try:
+            username = (await context.bot.get_chat(user_id)).username or f"ID: {user_id}"
+        except:
+            username = f"ID: {user_id}"
+
+        admin_text = (
+            f"⭐️ НОВАЯ ЗАЯВКА НА ВЫВОД ЗВЕЗД\n\n"
+            f"👤 Пользователь: @{username}\n"
+            f"🆔 ID: {user_id}\n"
+            f"⭐️ Сумма: {amount:.2f} ⭐️\n"
+            f"🎯 Получатель: {target_username}\n\n"
+            f"✅ Средства списаны со звездного баланса пользователя\n"
+            f"💰 Остаток на балансе: {get_user_star_balance(user_id):.2f} ⭐️\n\n"
+            f"⚠️ ТРЕБУЕТСЯ ОБРАБОТКА ВЫВОДА!"
+        )
+
+        try:
+            await context.bot.send_message(chat_id=ADMIN_ID, text=admin_text)
+            logger.info(f"✅ Администратор уведомлен о выводе звезд пользователем {user_id}: {amount:.2f} на {target_username}")
+        except Exception as e:
+            logger.error(f"❌ Не удалось уведомить администратора о выводе звезд: {e}")
+
+        await context.bot.send_message(
+            chat_id=user_id,
+            text=get_text(user_id, 'withdraw_success', context,
+                          amount=amount, method='⭐️ Stars', details=target_username, balance=get_user_star_balance(user_id))
+        )
+        return True
+    except Exception as e:
+        logger.error(f"❌ Ошибка при обработке вывода звезд: {e}")
+        await context.bot.send_message(
+            chat_id=user_id,
+            text=get_text(user_id, 'withdraw_error', context)
+        )
+        return False
+
 # ------------------ ФУНКЦИИ УВЕДОМЛЕНИЙ ------------------
 async def notify_seller_about_buyer(deal_id: str, buyer_username: str, buyer_id: int,
                                     context: ContextTypes.DEFAULT_TYPE):
@@ -1319,16 +1406,22 @@ async def notify_seller_about_manager_confirmation(deal_id: str, context: Contex
         deal_data = deal_links[deal_id]
         transfer_info = seller_transfers[deal_id]
         seller_id = transfer_info['seller_id']
-        net_amount = transfer_info['net_amount']
-        fee = transfer_info['fee']
-        deal_amount = transfer_info['deal_amount']
-
-        new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
-        user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
-
-        text = get_text(seller_id, 'seller_funds_credited', context,
-                        deal_id=deal_id, description=deal_data['description'],
-                        amount=deal_amount, fee=fee, net=net_amount, balance=new_balance)
+        if deal_data.get('currency') == CURRENCY_STARS:
+            deal_amount = transfer_info['deal_amount']
+            new_balance = await add_to_star_balance(seller_id, deal_amount, f"Завершение сделки #{deal_id}", context)
+            user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
+            # Text for stars is handled by add_to_star_balance, so we can just log and return
+            logger.info(f"✅ Продавец {seller_id} уведомлен о зачислении звезд")
+            return True
+        else:
+            net_amount = transfer_info['net_amount']
+            fee = transfer_info['fee']
+            deal_amount = transfer_info['deal_amount']
+            new_balance = await add_to_balance(seller_id, net_amount, f"Завершение сделки #{deal_id}", context)
+            user_deals_count[seller_id] = user_deals_count.get(seller_id, 0) + 1
+            text = get_text(seller_id, 'seller_funds_credited', context,
+                            deal_id=deal_id, description=deal_data['description'],
+                            amount=deal_amount, fee=fee, net=net_amount, balance=new_balance)
         try:
             await context.bot.send_message(chat_id=seller_id, text=text,
                                            reply_markup=get_transfer_confirmed_keyboard(seller_id, context))
@@ -1876,7 +1969,12 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
         if data == "my_balance":
             balance = get_user_balance(user_id)
+            star_balance = get_user_star_balance(user_id)
             username = query.from_user.username or "Пользователь"
+
+            star_balance_text = ""
+            if star_balance > 0:
+                star_balance_text = f"⭐️ Баланс: {star_balance:.2f} ⭐️\n"
 
             can_wallet, wallet_status, _ = get_withdrawal_status(user_id, 'wallet', context)
             can_card, card_status, _ = get_withdrawal_status(user_id, 'card', context)
@@ -1893,6 +1991,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
             text = get_text(user_id, 'my_balance', context,
                             username=username, balance=balance,
+                            star_balance_text=star_balance_text,
                             wallet_info=wallet_info, card_info=card_info,
                             fee=SYSTEM_FEE_PERCENT, min_withdraw=MIN_WITHDRAWAL_AMOUNT,
                             deals_requirement=deals_requirement, deals=deals)
@@ -2017,11 +2116,12 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
             return
 
         if data == "withdraw_to_stars":
-            balance = get_user_balance(user_id)
-            min_withdraw = MIN_WITHDRAWAL_AMOUNT
+            balance = get_user_star_balance(user_id)
+            min_withdraw = MIN_WITHDRAWAL_AMOUNT # Assuming the same min withdrawal for stars
 
             if balance < min_withdraw:
                 await query.message.reply_text(
+                    # Using ruble text for now, can be localized later
                     get_text(user_id, 'insufficient_balance', context,
                              balance=balance, min_withdraw=min_withdraw,
                              need=min_withdraw - balance),
@@ -2029,10 +2129,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
                 )
                 return
 
-            context.user_data['withdraw_method'] = 'Stars'
-            context.user_data['withdraw_details'] = 'Stars'
-            context.user_data['waiting_for_withdraw_amount'] = True
-
+            context.user_data['state'] = 'awaiting_star_withdraw_amount'
             await query.message.reply_text(
                 get_text(user_id, 'withdraw_to_stars', context,
                          balance=balance, min_withdraw=min_withdraw),
@@ -2454,6 +2551,63 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "❌ **НЕВЕРНЫЙ ФОРМАТ СУММЫ!**\n\n"
                     "Пожалуйста, введите число в формате: 1000.50",
                     reply_markup=get_back_keyboard(user_id, context)
+                )
+
+        elif context.user_data.get('state') == 'awaiting_star_withdraw_amount':
+            try:
+                amount = float(text)
+                balance = get_user_star_balance(user_id)
+                min_withdraw = MIN_WITHDRAWAL_AMOUNT
+
+                if amount < min_withdraw:
+                    await update.message.reply_text(
+                        get_text(user_id, 'insufficient_balance', context,
+                                 balance=balance, min_withdraw=min_withdraw,
+                                 need=min_withdraw - amount),
+                        reply_markup=get_back_keyboard(user_id, context)
+                    )
+                    return
+
+                if amount > balance:
+                    await update.message.reply_text(
+                        get_text(user_id, 'insufficient_balance', context,
+                                 balance=balance, min_withdraw=min_withdraw,
+                                 need=amount - balance),
+                        reply_markup=get_back_keyboard(user_id, context)
+                    )
+                    return
+
+                context.user_data['star_withdraw_amount'] = amount
+                context.user_data['state'] = 'awaiting_star_withdraw_username'
+                await update.message.reply_text(
+                    get_text(user_id, 'enter_star_withdraw_username', context, amount=amount),
+                    reply_markup=get_back_keyboard(user_id, context)
+                )
+            except ValueError:
+                await update.message.reply_text(
+                    "❌ **НЕВЕРНЫЙ ФОРМАТ СУММЫ!**\n\n"
+                    "Пожалуйста, введите число в формате: 100.50",
+                    reply_markup=get_back_keyboard(user_id, context)
+                )
+
+        elif context.user_data.get('state') == 'awaiting_star_withdraw_username':
+            username = text.strip()
+            if not username.startswith('@'):
+                username = '@' + username
+            
+            amount = context.user_data.get('star_withdraw_amount')
+
+            # Call the new withdrawal processing function for stars
+            success = await process_star_withdrawal(user_id, amount, username, context)
+
+            # Clean up user_data
+            context.user_data.pop('state', None)
+            context.user_data.pop('star_withdraw_amount', None)
+
+            if not success:
+                await update.message.reply_text(
+                    get_text(user_id, 'withdraw_error', context),
+                    reply_markup=get_main_keyboard(user_id, context)
                 )
 
         elif context.user_data.get('waiting_for_wallet'):
