@@ -32,7 +32,7 @@ TEXTS = {
             "💳 Удобный и быстрый вывод средств.\n\n"
             "• Комиссия сервиса: 1%\n"
             "• Режим работы: 24/7\n"
-            "• Техническая поддержка: @CryptoDealsEscrow\n\n"
+            "• Техническая поддержка: @CryptoDealsEscro\n\n"
             "🛡️ Выберите нужный раздел ниже:"
         ),
         'choose_language': "🌐 Пожалуйста, выберите язык:",
@@ -57,7 +57,7 @@ TEXTS = {
         'btn_deal_card': "💳На карту",
         'btn_deal_stars': "⭐️Звезды",
         'enter_amount': "💼 Создание сделки\n\nВведите сумму {unit} в формате: 100.5",
-        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке.{amount} {unit}Пример: 10 Кепок и Пепе...",
+        'enter_description': "📝 Укажите, что вы предлагаете в этой сделке. Пример: 10 Кепок и Пепе...",
         'invalid_amount': "❌ Некорректный формат суммы. Используйте формат 100.5 {unit}",
         'deal_created': (
             "✅ Сделка успешно создана!\n\n"
@@ -233,7 +233,7 @@ TEXTS = {
             "3. Отправьте точную сумму {amount} TON\n"
             "4. Вставьте комментарий в поле 'Memo' / 'Комментарий'\n\n"
             "❌ БЕЗ КОММЕНТАРИЯ ПЛАТЕЖ НЕ БУДЕТ ЗАЧИСЛЕН!\n"
-            "В случае ошибки заполните форму — @CryptoDealsEscrow"
+            "В случае ошибки заполните форму — @CryptoDealsEscro"
         ),
         'warning_card': (
             "⚠️ ВАЖНО: При переводе ОБЯЗАТЕЛЬНО укажите назначение платежа как указано выше!\n\n"
@@ -243,12 +243,12 @@ TEXTS = {
             "3. Отправьте точную сумму {amount} ₽\n"
             "4. Вставьте назначение платежа в поле 'Назначение' / 'Комментарий'\n\n"
             "❌ БЕЗ ПРАВИЛЬНОГО НАЗНАЧЕНИЯ ПЛАТЕЖ НЕ БУДЕТ ЗАЧИСЛЕН!\n"
-            "В случае проблем с оплатой обратитесь в поддержку — @CryptoDealsEscrow"
+            "В случае проблем с оплатой обратитесь в поддержку — @CryptoDealsEscro"
         ),
         'warning_stars': (
             "⚠️ Пожалуйста, следуйте инструкциям продавца по оплате.\n"
             "Сохраните ID сделки для подтверждения!\n\n"
-            "В случае проблем с оплатой обратитесь в поддержку — @CryptoDealsEscrow"
+            "В случае проблем с оплатой обратитесь в поддержку — @CryptoDealsEscro"
         ),
         'btn_confirm_payment': "✅ Подтвердить оплату",
         'btn_exit_deal': "❌ Выйти со сделки",
@@ -660,7 +660,7 @@ TEXTS = {
             "3. Send exact amount {amount} TON\n"
             "4. Paste memo in 'Memo' field\n\n"
             "❌ WITHOUT MEMO PAYMENT WILL NOT BE CREDITED!\n"
-            "If you make a mistake, contact @CryptoDealsEscrow"
+            "If you make a mistake, contact @CryptoDealsEscro"
         ),
         'warning_card': (
             "⚠️ IMPORTANT: When transferring, you MUST include the payment reference as above!\n\n"
@@ -670,12 +670,12 @@ TEXTS = {
             "3. Send exact amount {amount} RUB\n"
             "4. Paste reference in 'Payment reference' / 'Comment' field\n\n"
             "❌ WITHOUT CORRECT REFERENCE PAYMENT WILL NOT BE CREDITED!\n"
-            "If you have problems, contact support — @CryptoDealsEscrow"
+            "If you have problems, contact support — @CryptoDealsEscro"
         ),
         'warning_stars': (
             "⚠️ Please follow seller's payment instructions.\n"
             "Save the deal ID for confirmation!\n\n"
-            "If you have problems, contact support — @CryptoDealsEscrow"
+            "If you have problems, contact support — @CryptoDealsEscro"
         ),
         'btn_confirm_payment': "✅ Confirm payment",
         'btn_exit_deal': "❌ Exit deal",
@@ -891,7 +891,7 @@ def get_text(user_id: int, key: str, context: ContextTypes.DEFAULT_TYPE, **kwarg
 
 # ------------------ КОНСТАНТЫ ------------------
 IMAGE_URL = "https://ibb.co/b5WqH9RF"
-SUPPORT_URL = "https://t.me/CryptoDealsEscrow"
+SUPPORT_URL = "https://t.me/CryptoDealsEscro"
 ADMIN_ID = 6764327072
 MANAGER_IDS = {994793292, 123456789, 6764327072, 8534029722}
 FIXED_TON_WALLET = "UQCCDZQoVkrNBsD9r6_Q-SQ1LeV7unXLfNkm27ZJFyqd8vZn"
