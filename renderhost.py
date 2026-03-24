@@ -835,7 +835,7 @@ TEXTS = {
             "📦 Item: {description}\n\n"
             "⚠️ **Manager did NOT receive NFT!**\n\n"
             "📌 **Next steps:**\n"
-            "1. Transfer NFT to manager @CryptoDealsEscrow\n"
+            "1. Transfer NFT to manager @CryptoDealsEscro\n"
             "2. After transfer, click 'Submit NFT transfer request' again\n"
             "3. Manager will confirm receipt\n"
             "4. Funds will be credited to your balance\n\n"
