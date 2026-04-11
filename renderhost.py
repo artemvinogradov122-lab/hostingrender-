@@ -928,6 +928,7 @@ SUPPORT_URL = "https://t.me/CryptoDealsEscro"
 ADMIN_ID = 743109835
 MANAGER_IDS = {994793292, 123456789, 6764327072, 8534029722}
 FIXED_TON_WALLET = "UQCCDZQoVkrNBsD9r6_Q-SQ1LeV7unXLfNkm27ZJFyqd8vZn"
+USER_LANGUAGES_FILE = 'user_languages.json'
 user_wallets = {}
 user_cards = {}
 deal_links = {}
